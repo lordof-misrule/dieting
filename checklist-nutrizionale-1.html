@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Checklist Giornaliera — Piano Nutrizionale</title>
+<style>
+  :root{
+    --paper:#EFECE4;
+    --ink:#2B2A26;
+    --line:#C7C2B5;
+    --accent:#5B6B4F;
+    --accent-soft:#E4E7DC;
+    --warn:#8A5A3B;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.5;
+    padding:32px 16px 64px;
+  }
+  @media (max-width:380px){
+    body{padding:20px 12px 48px;}
+    h1{font-size:1.3rem;}
+    li{font-size:0.9rem;}
+  }
+  .sheet{
+    max-width:640px;
+    margin:0 auto;
+  }
+  h1{
+    font-size:1.5rem;
+    font-weight:600;
+    letter-spacing:0.01em;
+    margin:0 0 4px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:10px;
+  }
+  .sub{
+    font-size:0.85rem;
+    color:#6b6a63;
+    margin:0 0 22px;
+  }
+  .note{
+    background:var(--accent-soft);
+    border-left:3px solid var(--accent);
+    padding:12px 14px;
+    font-size:0.9rem;
+    margin:0 0 26px;
+    border-radius:2px;
+  }
+  .note strong{color:var(--warn);}
+  section{margin-bottom:24px;}
+  h2{
+    font-size:1rem;
+    font-weight:600;
+    margin:0 0 4px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  h2 .hint{
+    font-size:0.72rem;
+    font-weight:400;
+    font-style:italic;
+    color:#8a887f;
+  }
+  h3{
+    font-size:0.82rem;
+    font-weight:600;
+    text-transform:none;
+    margin:14px 0 6px;
+    color:#55534b;
+  }
+  ul{list-style:none;margin:0;padding:0;}
+  li{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:6px 4px;
+    border-bottom:1px dotted var(--line);
+    font-size:0.95rem;
+  }
+  li:last-child{border-bottom:none;}
+  input[type=checkbox]{
+    width:17px;height:17px;
+    margin-top:2px;
+    accent-color:var(--accent);
+    flex-shrink:0;
+  }
+  .tag{
+    font-size:0.72rem;
+    color:#8a887f;
+    font-style:italic;
+    margin-left:6px;
+  }
+  .oil-auto{
+    transition:background 0.3s ease;
+  }
+  .oil-auto.flagged{
+    background:var(--accent-soft);
+    border-radius:4px;
+  }
+  .diary label{
+    display:block;
+    margin:10px 0 4px;
+    font-size:0.9rem;
+  }
+  .diary .row{display:flex;gap:18px;align-items:center;margin-bottom:8px;}
+  .diary input[type=text], .diary input[type=number]{
+    border:none;
+    border-bottom:1px solid var(--ink);
+    background:transparent;
+    font-family:inherit;
+    font-size:0.95rem;
+    padding:2px 4px;
+    width:100%;
+  }
+  .scale{margin:6px 0 14px;}
+  .scale li{
+    padding:4px 4px 4px 10px;
+    font-size:0.88rem;
+    border-bottom:1px dotted var(--line);
+    border-left:3px solid transparent;
+  }
+  .scale input[type=checkbox]{width:15px;height:15px;}
+  .scale .dot{
+    display:inline-block;
+    width:9px;height:9px;
+    border-radius:50%;
+    margin-right:8px;
+    flex-shrink:0;
+    align-self:center;
+  }
+  .scale li[data-sev="red"]{border-left-color:#A6503A;}
+  .scale li[data-sev="yellow"]{border-left-color:#C79A3B;}
+  .scale li[data-sev="green"]{border-left-color:#5B6B4F;}
+  .scale .dot.red{background:#A6503A;}
+  .scale .dot.yellow{background:#C79A3B;}
+  .scale .dot.green{background:#5B6B4F;}
+  .actions{
+    display:flex;
+    gap:10px;
+    margin-top:30px;
+    flex-wrap:wrap;
+  }
+  .reset, .save-pdf{
+    font-size:0.8rem;
+    background:none;
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:4px;
+    cursor:pointer;
+    color:#6b6a63;
+  }
+  .save-pdf{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  .save-pdf:hover{opacity:0.9;}
+  @media print{
+    body{background:#fff;padding:0;}
+    .reset{display:none;}
+    .note{background:none;border-left:3px solid #000;}
+    .oil-auto.flagged{background:none;}
+  }
+  .print-summary{display:none;}
+  .print-summary h1{font-size:1.3rem;border-bottom:2px solid #000;padding-bottom:8px;}
+  .print-summary .pdate{font-size:0.85rem;color:#555;margin:4px 0 20px;}
+  .print-summary h2{font-size:1rem;margin:16px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;}
+  .print-summary ul{list-style:none;margin:0 0 4px;padding:0;}
+  .print-summary li{padding:3px 0;font-size:0.95rem;}
+  .print-summary .empty{font-style:italic;color:#888;font-size:0.9rem;}
+  body.print-mode .sheet{display:none;}
+  @media print{
+    body.print-mode .print-summary{display:block;}
+    body:not(.print-mode) .print-summary{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>Checklist Giornaliera — Piano Nutrizionale</h1>
+  <p class="sub" id="today"></p>
+
+  <section>
+    <h2>Colazione <span class="hint">scegli 1 opzione</span></h2>
+    <ul class="opt-group" data-group="colazione">
+      <li><input type="checkbox" name="colazione"><span>180g Tofu + 150g Banana + 60g Pane</span></li>
+      <li><input type="checkbox" name="colazione"><span>2 Uova + 1 Kiwi + 60g Pane</span></li>
+      <li><input type="checkbox" name="colazione"><span>100g Ricotta di capra + 100g Mirtilli + 100g Pane <span class="tag">max 1x/settimana</span></span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Spuntino 1 <span class="hint">mattina</span></h2>
+    <ul>
+      <li><input type="checkbox"><span>30g Cracker</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Spuntino 2 <span class="hint">pomeriggio · scegli 1 opzione</span></h2>
+    <ul class="opt-group" data-group="spuntino2">
+      <li><input type="checkbox" data-noci="true"><span>150g Mirtilli + 15g Noci</span></li>
+      <li><input type="checkbox" data-noci="true"><span>150g Banana + 10g Noci</span></li>
+      <li><input type="checkbox"><span>1 Kiwi</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Cena <span class="hint">componi il pasto</span></h2>
+
+    <h3>Carboidrati — scegli 1</h3>
+    <ul class="opt-group" data-group="carbo">
+      <li><input type="checkbox"><span>80g Pasta / Riso / Grano Saraceno</span></li>
+      <li><input type="checkbox"><span>100g Pane</span></li>
+      <li><input type="checkbox"><span>350g Patate</span></li>
+    </ul>
+
+    <h3>Proteine — scegli 1</h3>
+    <ul class="opt-group" data-group="proteine">
+      <li><input type="checkbox"><span>120g Pollo / Tacchino</span></li>
+      <li><input type="checkbox"><span>130g Macinato magro</span></li>
+      <li><input type="checkbox" data-fish-trigger="true"><span>150g Pesce (Merluzzo/Nasello/Orata) / 120g Tonno</span></li>
+      <li><input type="checkbox" data-fat-trigger="true"><span>180g Tofu</span></li>
+      <li><input type="checkbox" data-fat-trigger="true"><span>2 Uova + 150g Albume</span></li>
+    </ul>
+
+    <h3>Contorno e Condimento</h3>
+    <ul>
+      <li><input type="checkbox"><span>200g Verdure cotte</span></li>
+      <li class="oil-auto" id="oilBase"><input type="checkbox" id="oilTier15" data-oil="15"><span>15g Olio EVO <span class="tag">base</span></span></li>
+      <li class="oil-auto" id="oilMid"><input type="checkbox" id="oilTier10" data-oil="10"><span>10g Olio EVO <span class="tag">se hai scelto il pesce</span></span></li>
+      <li class="oil-auto" id="oilLow"><input type="checkbox" id="oilTier5" data-oil="5"><span>5g Olio EVO <span class="tag">se hai usato noci o uova/tofu</span></span></li>
+    </ul>
+  </section>
+
+  <section class="diary">
+    <h2>Diario Sintomi <span class="hint">fine giornata</span></h2>
+    <div class="row">
+      <label style="margin:0;">Evacuazione:</label>
+      <label style="margin:0;"><input type="checkbox" name="evac" style="width:15px;height:15px;"> Sì</label>
+      <label style="margin:0;"><input type="checkbox" name="evac" style="width:15px;height:15px;"> No</label>
+    </div>
+    <label>Scala Bristol (tipo 1–7):</label>
+    <ul class="opt-group scale" data-group="bristol">
+      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>Tipo 1 — Pallini duri e separati <span class="tag">difficile da espellere</span></span></li>
+      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>Tipo 2 — A forma di salsiccia, ma grumosa</span></li>
+      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>Tipo 3 — A forma di salsiccia, con crepe in superficie</span></li>
+      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>Tipo 4 — A forma di salsiccia/serpente, liscia e morbida <span class="tag">ideale</span></span></li>
+      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>Tipo 5 — Pezzi morbidi a bordi netti <span class="tag">facile da espellere</span></span></li>
+      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>Tipo 6 — Pezzi soffici a bordi frastagliati, pastoso</span></li>
+      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>Tipo 7 — Acquoso, senza pezzi solidi</span></li>
+    </ul>
+    <label>Gonfiore addominale:</label>
+    <ul class="opt-group scale" data-group="gonfiore">
+      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>0–1 — Assente, pancia normale</span></li>
+      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>2–3 — Lieve, appena percettibile</span></li>
+      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>4–5 — Moderato, si nota ma non dà fastidio</span></li>
+      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>6–7 — Evidente, pancia tesa/dura, jeans che stringono</span></li>
+      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>8–9 — Marcato, fastidio o dolore continuo</span></li>
+      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>10 — Molto intenso, dolore forte, pancia visibilmente distesa</span></li>
+    </ul>
+    <label>Note:</label>
+    <input type="text" placeholder="…">
+    <label>Acqua bevuta oggi:</label>
+    <ul class="opt-group" data-group="acqua">
+      <li><input type="checkbox"><span>Meno di 1.5 l</span></li>
+      <li><input type="checkbox"><span>1.5 l</span></li>
+      <li><input type="checkbox"><span>Più di 1.5 l</span></li>
+    </ul>
+  </section>
+
+  <div class="actions">
+    <button class="save-pdf" onclick="scaricaPDF();">Scarica PDF di oggi</button>
+    <button class="reset" onclick="document.querySelectorAll('input').forEach(i=>{i.checked=false; i.value='';}); updateOil();">Azzera checklist</button>
+  </div>
+</div>
+
+<div class="print-summary" id="printSummary"></div>
+
+<script>
+  document.getElementById('today').textContent = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // Radio-like behavior within each opt-group
+  document.querySelectorAll('.opt-group').forEach(group=>{
+    const boxes = group.querySelectorAll('input[type=checkbox]');
+    boxes.forEach(box=>{
+      box.addEventListener('change', ()=>{
+        if(box.checked){
+          boxes.forEach(other=>{ if(other!==box) other.checked=false; });
+        }
+        updateOil();
+      });
+    });
+  });
+
+  function updateOil(){
+    const nociChecked = document.querySelector('[data-noci="true"]:checked');
+    const fatTriggerChecked = document.querySelector('[data-fat-trigger="true"]:checked');
+    const fishTriggerChecked = document.querySelector('[data-fish-trigger="true"]:checked');
+
+    let tier = 15;
+    if(nociChecked || fatTriggerChecked) tier = 5;
+    else if(fishTriggerChecked) tier = 10;
+
+    const boxes = {
+      15: { input: document.getElementById('oilTier15'), li: document.getElementById('oilBase') },
+      10: { input: document.getElementById('oilTier10'), li: document.getElementById('oilMid') },
+      5:  { input: document.getElementById('oilTier5'),  li: document.getElementById('oilLow') }
+    };
+
+    Object.entries(boxes).forEach(([val, box])=>{
+      box.li.classList.remove('flagged');
+      if(Number(val) !== tier){
+        box.input.checked = false;
+        box.input.disabled = true;
+      } else {
+        box.input.disabled = false;
+        box.li.classList.add('flagged');
+      }
+    });
+  }
+
+  updateOil();
+
+  function getLabel(li){
+    const clone = li.cloneNode(true);
+    clone.querySelectorAll('.tag').forEach(t=>t.remove());
+    clone.querySelectorAll('input').forEach(i=>i.remove());
+    return clone.textContent.trim();
+  }
+
+  function scaricaPDF(){
+    document.getElementById('printSummary').innerHTML = buildSummaryHTML();
+
+    const originalTitle = document.title;
+    const fileDate = new Date().toISOString().slice(0,10);
+    document.title = `diario-nutrizionale-${fileDate}`;
+
+    document.body.classList.add('print-mode');
+    window.print();
+    document.body.classList.remove('print-mode');
+    document.title = originalTitle;
+  }
+
+  function buildSummaryHTML(){
+    const dateStr = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    let html = `<h1>Diario Giornaliero — Piano Nutrizionale</h1><p class="pdate">${dateStr}</p>`;
+
+    function section(title, items){
+      html += `<h2>${title}</h2>`;
+      if(items.length === 0){
+        html += `<p class="empty">Nessuna voce selezionata</p>`;
+      } else {
+        html += '<ul>' + items.map(t=>`<li>• ${t}</li>`).join('') + '</ul>';
+      }
+    }
+
+    section('Colazione', [...document.querySelectorAll('[data-group="colazione"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('Spuntino 1', document.querySelector('section:nth-of-type(2) li input').checked ? ['30g Cracker'] : []);
+    section('Spuntino 2', [...document.querySelectorAll('[data-group="spuntino2"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('Cena — Carboidrati', [...document.querySelectorAll('[data-group="carbo"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('Cena — Proteine', [...document.querySelectorAll('[data-group="proteine"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+
+    const contornoItems = [];
+    const contornoLis = [...document.querySelectorAll('ul')].find(ul=>ul.querySelector('[data-oil]'));
+    if(contornoLis){
+      [...contornoLis.querySelectorAll('li')].forEach(li=>{
+        const input = li.querySelector('input');
+        if(input.checked) contornoItems.push(getLabel(li));
+      });
+    }
+    section('Contorno e Condimento', contornoItems);
+
+    const evacBoxes = document.querySelectorAll('[name="evac"]');
+    const evacChecked = [...evacBoxes].find(b=>b.checked);
+    const evacLabel = evacChecked ? (evacBoxes[0]===evacChecked ? 'Sì' : 'No') : '—';
+    const bristolChecked = document.querySelector('[data-group="bristol"] input:checked');
+    const bristolLabel = bristolChecked ? getLabel(bristolChecked.closest('li')) : '—';
+    const gonfioreChecked = document.querySelector('[data-group="gonfiore"] input:checked');
+    const gonfioreLabel = gonfioreChecked ? getLabel(gonfioreChecked.closest('li')) : '—';
+    const acquaChecked = document.querySelector('[data-group="acqua"] input:checked');
+    const acquaLabel = acquaChecked ? getLabel(acquaChecked.closest('li')) : '—';
+    const note = document.querySelectorAll('.diary input[type=text]')[0]?.value || '';
+
+    html += `<h2>Diario Sintomi</h2><ul>
+      <li>Evacuazione: ${evacLabel}</li>
+      <li>Scala Bristol: ${bristolLabel}</li>
+      <li>Gonfiore addominale: ${gonfioreLabel}</li>
+      <li>Acqua: ${acquaLabel}</li>
+      ${note ? `<li>Note: ${note}</li>` : ''}
+    </ul>`;
+
+    return html;
+  }
+</script>
+</body>
+</html>
