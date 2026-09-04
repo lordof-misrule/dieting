@@ -21,10 +21,10 @@
     color:var(--ink);
     font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
     line-height:1.5;
-    padding:32px 16px 64px;
+    padding:32px 16px 80px;
   }
   @media (max-width:380px){
-    body{padding:20px 12px 48px;}
+    body{padding:20px 12px 70px;}
     h1{font-size:1.3rem;}
     li{font-size:0.9rem;}
   }
@@ -44,6 +44,25 @@
     font-size:0.85rem;
     color:#6b6a63;
     margin:0 0 16px;
+  }
+  .sticky-counter {
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+  .sticky-counter .val {
+    font-weight: bold;
+    color: #A3C9A8;
   }
   .day-type-selector {
     background: #e2e5d9;
@@ -184,7 +203,7 @@
   .save-pdf:hover{opacity:0.9;}
   @media print{
     body{background:#fff;padding:0;}
-    .reset, .day-type-selector{display:none;}
+    .reset, .day-type-selector, .sticky-counter{display:none;}
     .note{background:none;border-left:3px solid #000;}
     .oil-auto.flagged{background:none;}
   }
@@ -207,6 +226,14 @@
   <h1>Checklist Giornaliera — Piano Nutrizionale</h1>
   <p class="sub" id="today"></p>
 
+  <div class="sticky-counter">
+    <span>Totale Selezionato:</span>
+    <div>
+      <span class="val" id="totalKcal">0</span> kcal | 
+      <span class="val" id="totalProt">0</span>g prot
+    </div>
+  </div>
+
   <div class="day-type-selector">
     <label for="dayType"><strong>Tipologia Giorno:</strong></label>
     <select id="dayType" onchange="toggleDayType()">
@@ -219,11 +246,11 @@
   <section>
     <h2>06:00 Colazione <span class="hint">~320-340 kcal | ~18-20g prot · scegli 1 opzione</span></h2>
     <ul class="opt-group" data-group="colazione">
-      <li><input type="checkbox" name="colazione"><span>Grana / Parmigiano + Pane integrale</span></li>
-      <li><input type="checkbox" name="colazione"><span>Mozzarella magra + Pane integrale</span></li>
-      <li><input type="checkbox" name="colazione"><span>Affettato magro (Bresaola / Tacchino) + Pane</span></li>
-      <li><input type="checkbox" name="colazione"><span>Ricotta di capra + Pane integrale</span></li>
-      <li><input type="checkbox" name="colazione"><span>2 Uova strapazzate/sode + Pane <span class="tag">max 1×/settimana</span></span></li>
+      <li><input type="checkbox" data-kcal="330" data-prot="19"><span>50g Grana / Parmigiano + 60g Pane integrale</span></li>
+      <li><input type="checkbox" data-kcal="320" data-prot="18"><span>100g Mozzarella magra + 60g Pane integrale</span></li>
+      <li><input type="checkbox" data-kcal="310" data-prot="20"><span>60g Affettato magro (Bresaola / Tacchino) + 60g Pane</span></li>
+      <li><input type="checkbox" data-kcal="340" data-prot="18"><span>100g Ricotta di capra + 60g Pane integrale</span></li>
+      <li><input type="checkbox" data-kcal="335" data-prot="19"><span>2 Uova strapazzate/sode + 60g Pane <span class="tag">max 1×/settimana</span></span></li>
     </ul>
   </section>
 
@@ -234,21 +261,21 @@
     </div>
     <h3>Scegli la farcia del Panino (Pane 60–70g):</h3>
     <ul class="opt-group" data-group="panino">
-      <li><input type="checkbox" data-fish-trigger="true"><span>80g Tonno al naturale sgocciolato <span class="tag">sminuzzato con 1 filo d'olio o spalmabile magro</span></span></li>
-      <li><input type="checkbox"><span>60g Bresaola <span class="tag">zero manipolazione al lavoro</span></span></li>
-      <li><input type="checkbox"><span>60-70g Petto di pollo / tacchino a fette</span></li>
+      <li><input type="checkbox" data-kcal="295" data-prot="21" data-fish-trigger="true"><span>80g Tonno al naturale sgocciolato <span class="tag">sminuzzato con 1 filo d'olio o spalmabile magro</span></span></li>
+      <li><input type="checkbox" data-kcal="290" data-prot="22"><span>60g Bresaola <span class="tag">zero manipolazione al lavoro</span></span></li>
+      <li><input type="checkbox" data-kcal="300" data-prot="20"><span>60-70g Petto di pollo / tacchino a fette</span></li>
     </ul>
     <h3>Verdura aggiuntiva:</h3>
     <ul>
-      <li><input type="checkbox" checked><span>Verdura cruda a fette/listarelle (Insalata / Carote — Pomodoro escluso)</span></li>
+      <li><input type="checkbox" data-kcal="15" data-prot="1" checked><span>Verdura cruda a fette/listarelle (Insalata / Carote — Pomodoro escluso)</span></li>
     </ul>
   </section>
 
   <section>
     <h2>16:00-16:30 Merenda <span class="hint">~230 kcal | ~5g prot</span></h2>
     <ul class="opt-group" data-group="merenda">
-      <li><input type="checkbox" data-noci="true"><span>1 Banana + 25g Noci (monodose) <span class="tag">ottimo pre/post allenamento</span></span></li>
-      <li><input type="checkbox"><span>1 Frutto di stagione + 15g Noci</span></li>
+      <li><input type="checkbox" data-kcal="250" data-prot="5" data-noci="true"><span>1 Banana + 25g Noci (monodose) <span class="tag">ottimo pre/post allenamento</span></span></li>
+      <li><input type="checkbox" data-kcal="180" data-prot="3"><span>1 Frutto di stagione + 15g Noci</span></li>
     </ul>
   </section>
 
@@ -257,36 +284,33 @@
 
     <h3>Proteine — scegli 1</h3>
     <ul class="opt-group" data-group="proteine">
-      <li><input type="checkbox"><span>140-150g Pollo / Tacchino</span></li>
-      <li><input type="checkbox" data-fish-trigger="true"><span>140-150g Pesce magro (Merluzzo / Orata / Spigola / Tonno)</span></li>
-      <li><input type="checkbox" data-fat-trigger="true"><span>140-150g Tofu grigliato/al naturale</span></li>
-      <li><input type="checkbox" data-fat-trigger="true"><span>2 Uova + 100g Albume</span></li>
+      <li><input type="checkbox" data-kcal="165" data-prot="31"><span>140-150g Pollo / Tacchino</span></li>
+      <li><input type="checkbox" data-kcal="140" data-prot="28" data-fish-trigger="true"><span>140-150g Pesce magro (Merluzzo / Orata / Spigola / Tonno)</span></li>
+      <li><input type="checkbox" data-kcal="180" data-prot="16" data-fat-trigger="true"><span>140-150g Tofu grigliato/al naturale</span></li>
+      <li><input type="checkbox" data-kcal="190" data-prot="20" data-fat-trigger="true"><span>2 Uova + 100g Albume</span></li>
     </ul>
-    <div style="font-size: 0.8rem; color: #6b6a63; margin-top: 4px;">
-      * Se serve raggiungere 85-90g di proteine giornaliere, aggiungi +20g di pollo/pesce a cena.
-    </div>
 
     <h3>Carboidrati — scegli 1</h3>
     <ul class="opt-group" data-group="carbo">
-      <li><input type="checkbox"><span>80-100g Riso / Pasta integrale / Grano Saraceno</span></li>
-      <li><input type="checkbox"><span>80-100g Pane integrale/di tipo 1</span></li>
-      <li><input type="checkbox"><span>250-300g Patate al vapore/forno</span></li>
+      <li><input type="checkbox" data-kcal="280" data-prot="7"><span>80-100g Riso / Pasta integrale / Grano Saraceno</span></li>
+      <li><input type="checkbox" data-kcal="240" data-prot="8"><span>80-100g Pane integrale/di tipo 1</span></li>
+      <li><input type="checkbox" data-kcal="220" data-prot="5"><span>250-300g Patate al vapore/forno</span></li>
     </ul>
 
     <h3>Contorno e Condimento</h3>
     <ul>
-      <li><input type="checkbox"><span>200g Verdura cotta o cruda a piacere</span></li>
-      <li class="oil-auto" id="oilBase"><input type="checkbox" id="oilTier10" data-oil="10"><span>8–10g Olio EVO <span class="tag">base (~1 cucchiaio)</span></span></li>
-      <li class="oil-auto" id="oilLow"><input type="checkbox" id="oilTier5" data-oil="5"><span>5g Olio EVO <span class="tag">se hai usato noci/uova/tofu</span></span></li>
+      <li><input type="checkbox" data-kcal="40" data-prot="2"><span>200g Verdura cotta o cruda a piacere</span></li>
+      <li class="oil-auto" id="oilBase"><input type="checkbox" id="oilTier10" data-oil="10" data-kcal="90" data-prot="0"><span>8–10g Olio EVO <span class="tag">base (~1 cucchiaio)</span></span></li>
+      <li class="oil-auto" id="oilLow"><input type="checkbox" id="oilTier5" data-oil="5" data-kcal="45" data-prot="0"><span>5g Olio EVO <span class="tag">se hai usato noci/uova/tofu</span></span></li>
     </ul>
   </section>
 
   <section>
     <h2>Budget Flessibile Settimanale <span class="hint">~600-650 kcal totali / sett</span></h2>
     <ul>
-      <li><input type="checkbox"><span>1 bicchiere di Vino (~100 kcal)</span></li>
-      <li><input type="checkbox"><span>1 Dolce / Brioche / Bounty (~280 kcal)</span></li>
-      <li><input type="checkbox"><span>1 Aperitivo / Cena fuori <span class="tag">riduci carboidrati agli altri pasti della giornata</span></span></li>
+      <li><input type="checkbox" data-kcal="100" data-prot="0"><span>1 bicchiere di Vino (~100 kcal)</span></li>
+      <li><input type="checkbox" data-kcal="280" data-prot="2"><span>1 Dolce / Brioche / Bounty (~280 kcal)</span></li>
+      <li><input type="checkbox" data-kcal="300" data-prot="5"><span>1 Aperitivo / Cena fuori <span class="tag">riduci carboidrati agli altri pasti della giornata</span></span></li>
     </ul>
   </section>
 
@@ -328,7 +352,7 @@
 
   <div class="actions">
     <button class="save-pdf" onclick="scaricaPDF();">Scarica PDF di oggi</button>
-    <button class="reset" onclick="document.querySelectorAll('input').forEach(i=>{i.checked=false; i.value='';}); updateOil();">Azzera checklist</button>
+    <button class="reset" onclick="document.querySelectorAll('input').forEach(i=>{i.checked=false; i.value='';}); updateOil(); calculateTotals();">Azzera checklist</button>
   </div>
 </div>
 
@@ -347,7 +371,6 @@
     }
   }
 
-  // Radio-like behavior within each opt-group
   document.querySelectorAll('.opt-group').forEach(group=>{
     const boxes = group.querySelectorAll('input[type=checkbox]');
     boxes.forEach(box=>{
@@ -356,9 +379,29 @@
           boxes.forEach(other=>{ if(other!==box) other.checked=false; });
         }
         updateOil();
+        calculateTotals();
       });
     });
   });
+
+  document.querySelectorAll('input[type=checkbox]').forEach(box=>{
+    box.addEventListener('change', calculateTotals);
+  });
+
+  function calculateTotals() {
+    let totalKcal = 0;
+    let totalProt = 0;
+
+    document.querySelectorAll('input[type=checkbox]:checked').forEach(box => {
+      const kcal = parseInt(box.getAttribute('data-kcal')) || 0;
+      const prot = parseInt(box.getAttribute('data-prot')) || 0;
+      totalKcal += kcal;
+      totalProt += prot;
+    });
+
+    document.getElementById('totalKcal').textContent = totalKcal;
+    document.getElementById('totalProt').textContent = totalProt;
+  }
 
   function updateOil(){
     const fatTriggerChecked = document.querySelector('[data-fat-trigger="true"]:checked');
@@ -386,6 +429,7 @@
   }
 
   updateOil();
+  calculateTotals();
 
   function getLabel(li){
     const clone = li.cloneNode(true);
@@ -410,7 +454,14 @@
   function buildSummaryHTML(){
     const dateStr = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
     const dayTypeLabel = document.getElementById('dayType').options[document.getElementById('dayType').selectedIndex].text;
-    let html = `<h1>Diario Giornaliero — Piano Nutrizionale</h1><p class="pdate">${dateStr} — <strong>${dayTypeLabel}</strong></p>`;
+    const totKcal = document.getElementById('totalKcal').textContent;
+    const totProt = document.getElementById('totalProt').textContent;
+
+    let html = `<h1>Diario Giornaliero — Piano Nutrizionale</h1>
+    <p class="pdate">${dateStr} — <strong>${dayTypeLabel}</strong></p>
+    <div style="background:#f0f0f0; padding:10px; border-radius:4px; margin-bottom:15px;">
+      <strong>Totale Giornaliero Calcolato:</strong> ${totKcal} kcal | ${totProt}g Proteine
+    </div>`;
 
     function section(title, items){
       html += `<h2>${title}</h2>`;
@@ -443,22 +494,4 @@
     const bristolChecked = document.querySelector('[data-group="bristol"] input:checked');
     const bristolLabel = bristolChecked ? getLabel(bristolChecked.closest('li')) : '—';
     const gonfioreChecked = document.querySelector('[data-group="gonfiore"] input:checked');
-    const gonfioreLabel = gonfioreChecked ? getLabel(gonfioreChecked.closest('li')) : '—';
-    const acquaChecked = document.querySelector('[data-group="acqua"] input:checked');
-    const acquaLabel = acquaChecked ? getLabel(acquaChecked.closest('li')) : '—';
-    const note = document.querySelectorAll('.diary input[type=text]')[0]?.value || '';
-
-    html += `<h2>Diario Sintomi</h2><ul>
-      <li>Evacuazione: ${evacLabel}</li>
-      <li>Scala Bristol: ${bristolLabel}</li>
-      <li>Gonfiore addominale: ${gonfioreLabel}</li>
-      <li>Acqua: ${acquaLabel}</li>
-      ${note ? `<li>Note: ${note}</li>` : ''}
-    </ul>`;
-
-    return html;
-  }
-</script>
-</body>
-</html>
-
+    const gonfioreLabel = gonfioreChecked ? getLabel(gonfioreChecked.close
