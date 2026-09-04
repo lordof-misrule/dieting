@@ -371,6 +371,21 @@
     }
   }
 
+  function calculateTotals() {
+    let totalKcal = 0;
+    let totalProt = 0;
+
+    document.querySelectorAll('input[type=checkbox]:checked').forEach(box => {
+      const kcal = parseInt(box.getAttribute('data-kcal')) || 0;
+      const prot = parseInt(box.getAttribute('data-prot')) || 0;
+      totalKcal += kcal;
+      totalProt += prot;
+    });
+
+    document.getElementById('totalKcal').textContent = totalKcal;
+    document.getElementById('totalProt').textContent = totalProt;
+  }
+
   document.querySelectorAll('.opt-group').forEach(group=>{
     const boxes = group.querySelectorAll('input[type=checkbox]');
     boxes.forEach(box=>{
@@ -387,21 +402,6 @@
   document.querySelectorAll('input[type=checkbox]').forEach(box=>{
     box.addEventListener('change', calculateTotals);
   });
-
-  function calculateTotals() {
-    let totalKcal = 0;
-    let totalProt = 0;
-
-    document.querySelectorAll('input[type=checkbox]:checked').forEach(box => {
-      const kcal = parseInt(box.getAttribute('data-kcal')) || 0;
-      const prot = parseInt(box.getAttribute('data-prot')) || 0;
-      totalKcal += kcal;
-      totalProt += prot;
-    });
-
-    document.getElementById('totalKcal').textContent = totalKcal;
-    document.getElementById('totalProt').textContent = totalProt;
-  }
 
   function updateOil(){
     const fatTriggerChecked = document.querySelector('[data-fat-trigger="true"]:checked');
@@ -494,4 +494,21 @@
     const bristolChecked = document.querySelector('[data-group="bristol"] input:checked');
     const bristolLabel = bristolChecked ? getLabel(bristolChecked.closest('li')) : '—';
     const gonfioreChecked = document.querySelector('[data-group="gonfiore"] input:checked');
-    const gonfioreLabel = gonfioreChecked ? getLabel(gonfioreChecked.close
+    const gonfioreLabel = gonfioreChecked ? getLabel(gonfioreChecked.closest('li')) : '—';
+    const acquaChecked = document.querySelector('[data-group="acqua"] input:checked');
+    const acquaLabel = acquaChecked ? getLabel(acquaChecked.closest('li')) : '—';
+    const note = document.querySelectorAll('.diary input[type=text]')[0]?.value || '';
+
+    html += `<h2>Diario Sintomi</h2><ul>
+      <li>Evacuazione: ${evacLabel}</li>
+      <li>Scala Bristol: ${bristolLabel}</li>
+      <li>Gonfiore addominale: ${gonfioreLabel}</li>
+      <li>Acqua: ${acquaLabel}</li>
+      ${note ? `<li>Note: ${note}</li>` : ''}
+    </ul>`;
+
+    return html;
+  }
+</script>
+</body>
+</html>
