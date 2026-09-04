@@ -83,15 +83,6 @@
     font-size: 0.9rem;
     border-radius: 4px;
   }
-  .note{
-    background:var(--accent-soft);
-    border-left:3px solid var(--accent);
-    padding:12px 14px;
-    font-size:0.88rem;
-    margin:0 0 22px;
-    border-radius:2px;
-  }
-  .note strong{color:var(--warn);}
   section{margin-bottom:24px;}
   h2{
     font-size:1rem;
@@ -204,7 +195,6 @@
   @media print{
     body{background:#fff;padding:0;}
     .reset, .day-type-selector, .sticky-counter{display:none;}
-    .note{background:none;border-left:3px solid #000;}
     .oil-auto.flagged{background:none;}
   }
   .print-summary{display:none;}
@@ -256,26 +246,24 @@
 
   <section id="sectionBreak">
     <h2>10:30-11:00 Break / Pranzo Ufficio <span class="hint">~280-310 kcal | ~20-22g prot</span></h2>
-    <div class="note">
-      <strong>Note Panino:</strong> Niente scatolette. Proteina incorporata dentro 60-70g di pane. Verdura cruda libera (pomodoro escluso, ok insalata/carote).
-    </div>
     <h3>Scegli la farcia del Panino (Pane 60–70g):</h3>
     <ul class="opt-group" data-group="panino">
-      <li><input type="checkbox" data-kcal="295" data-prot="21" data-fish-trigger="true"><span>80g Tonno al naturale sgocciolato <span class="tag">sminuzzato con 1 filo d'olio o spalmabile magro</span></span></li>
-      <li><input type="checkbox" data-kcal="290" data-prot="22"><span>60g Bresaola <span class="tag">zero manipolazione al lavoro</span></span></li>
+      <li><input type="checkbox" data-kcal="295" data-prot="21"><span>80g Tonno al naturale sgocciolato</span></li>
+      <li><input type="checkbox" data-kcal="290" data-prot="22"><span>60g Bresaola</span></li>
       <li><input type="checkbox" data-kcal="300" data-prot="20"><span>60-70g Petto di pollo / tacchino a fette</span></li>
     </ul>
     <h3>Verdura aggiuntiva:</h3>
     <ul>
-      <li><input type="checkbox" data-kcal="15" data-prot="1" checked><span>Verdura cruda a fette/listarelle (Insalata / Carote — Pomodoro escluso)</span></li>
+      <li><input type="checkbox" data-kcal="15" data-prot="1" checked><span>Verdura cruda a fette/listarelle (Insalata / Carote)</span></li>
     </ul>
   </section>
 
   <section>
-    <h2>16:00-16:30 Merenda <span class="hint">~230 kcal | ~5g prot</span></h2>
+    <h2>16:00-16:30 Merenda <span class="hint">~160-180 kcal | ~3-4g prot</span></h2>
     <ul class="opt-group" data-group="merenda">
-      <li><input type="checkbox" data-kcal="250" data-prot="5" data-noci="true"><span>1 Banana + 25g Noci (monodose) <span class="tag">ottimo pre/post allenamento</span></span></li>
-      <li><input type="checkbox" data-kcal="180" data-prot="3"><span>1 Frutto di stagione + 15g Noci</span></li>
+      <li><input type="checkbox" data-kcal="90" data-prot="1"><span>1 Banana <span class="tag">ottimo pre/post allenamento</span></span></li>
+      <li><input type="checkbox" data-kcal="70" data-prot="1"><span>1 Frutto di stagione</span></li>
+      <li><input type="checkbox" data-kcal="160" data-prot="4" data-fat-trigger="true"><span>25g Noci (monodose) <span class="tag">riduce l'olio a cena a 5g</span></span></li>
     </ul>
   </section>
 
@@ -285,8 +273,8 @@
     <h3>Proteine — scegli 1</h3>
     <ul class="opt-group" data-group="proteine">
       <li><input type="checkbox" data-kcal="165" data-prot="31"><span>140-150g Pollo / Tacchino</span></li>
-      <li><input type="checkbox" data-kcal="140" data-prot="28" data-fish-trigger="true"><span>140-150g Pesce magro (Merluzzo / Orata / Spigola / Tonno)</span></li>
-      <li><input type="checkbox" data-kcal="180" data-prot="16" data-fat-trigger="true"><span>140-150g Tofu grigliato/al naturale</span></li>
+      <li><input type="checkbox" data-kcal="140" data-prot="28"><span>140-150g Pesce magro (Merluzzo / Orata / Spigola / Tonno)</span></li>
+      <li><input type="checkbox" data-kcal="180" data-prot="16" data-fat-trigger="true"><span>140-150g Tofu al naturale</span></li>
       <li><input type="checkbox" data-kcal="190" data-prot="20" data-fat-trigger="true"><span>2 Uova + 100g Albume</span></li>
     </ul>
 
@@ -400,7 +388,10 @@
   });
 
   document.querySelectorAll('input[type=checkbox]').forEach(box=>{
-    box.addEventListener('change', calculateTotals);
+    box.addEventListener('change', ()=>{
+      updateOil();
+      calculateTotals();
+    });
   });
 
   function updateOil(){
