@@ -43,14 +43,33 @@
   .sub{
     font-size:0.85rem;
     color:#6b6a63;
-    margin:0 0 22px;
+    margin:0 0 16px;
+  }
+  .day-type-selector {
+    background: #e2e5d9;
+    border: 1px solid var(--line);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+  }
+  .day-type-selector select {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: 4px;
   }
   .note{
     background:var(--accent-soft);
     border-left:3px solid var(--accent);
     padding:12px 14px;
-    font-size:0.9rem;
-    margin:0 0 26px;
+    font-size:0.88rem;
+    margin:0 0 22px;
     border-radius:2px;
   }
   .note strong{color:var(--warn);}
@@ -165,7 +184,7 @@
   .save-pdf:hover{opacity:0.9;}
   @media print{
     body{background:#fff;padding:0;}
-    .reset{display:none;}
+    .reset, .day-type-selector{display:none;}
     .note{background:none;border-left:3px solid #000;}
     .oil-auto.flagged{background:none;}
   }
@@ -188,56 +207,86 @@
   <h1>Checklist Giornaliera — Piano Nutrizionale</h1>
   <p class="sub" id="today"></p>
 
+  <div class="day-type-selector">
+    <label for="dayType"><strong>Tipologia Giorno:</strong></label>
+    <select id="dayType" onchange="toggleDayType()">
+      <option value="ufficio">Giorno Ufficio (3×/sett) — con Panino</option>
+      <option value="casa">Giorno Casa / Smart Working</option>
+      <option value="palestra">Giorno Allenamento / Palestra</option>
+    </select>
+  </div>
+
   <section>
-    <h2>Colazione <span class="hint">scegli 1 opzione</span></h2>
+    <h2>06:00 Colazione <span class="hint">~320-340 kcal | ~18-20g prot · scegli 1 opzione</span></h2>
     <ul class="opt-group" data-group="colazione">
-      <li><input type="checkbox" name="colazione"><span>180g Tofu + 150g Banana + 60g Pane</span></li>
-      <li><input type="checkbox" name="colazione"><span>2 Uova + 1 Kiwi + 60g Pane</span></li>
-      <li><input type="checkbox" name="colazione"><span>100g Ricotta di capra + 100g Mirtilli + 100g Pane <span class="tag">max 1x/settimana</span></span></li>
+      <li><input type="checkbox" name="colazione"><span>Grana / Parmigiano + Pane integrale</span></li>
+      <li><input type="checkbox" name="colazione"><span>Mozzarella magra + Pane integrale</span></li>
+      <li><input type="checkbox" name="colazione"><span>Affettato magro (Bresaola / Tacchino) + Pane</span></li>
+      <li><input type="checkbox" name="colazione"><span>Ricotta di capra + Pane integrale</span></li>
+      <li><input type="checkbox" name="colazione"><span>2 Uova strapazzate/sode + Pane <span class="tag">max 1×/settimana</span></span></li>
     </ul>
   </section>
 
-  <section>
-    <h2>Spuntino 1 <span class="hint">mattina</span></h2>
+  <section id="sectionBreak">
+    <h2>10:30-11:00 Break / Pranzo Ufficio <span class="hint">~280-310 kcal | ~20-22g prot</span></h2>
+    <div class="note">
+      <strong>Note Panino:</strong> Niente scatolette. Proteina incorporata dentro 60-70g di pane. Verdura cruda libera (pomodoro escluso, ok insalata/carote).
+    </div>
+    <h3>Scegli la farcia del Panino (Pane 60–70g):</h3>
+    <ul class="opt-group" data-group="panino">
+      <li><input type="checkbox" data-fish-trigger="true"><span>80g Tonno al naturale sgocciolato <span class="tag">sminuzzato con 1 filo d'olio o spalmabile magro</span></span></li>
+      <li><input type="checkbox"><span>60g Bresaola <span class="tag">zero manipolazione al lavoro</span></span></li>
+      <li><input type="checkbox"><span>60-70g Petto di pollo / tacchino a fette</span></li>
+    </ul>
+    <h3>Verdura aggiuntiva:</h3>
     <ul>
-      <li><input type="checkbox"><span>30g Cracker</span></li>
+      <li><input type="checkbox" checked><span>Verdura cruda a fette/listarelle (Insalata / Carote — Pomodoro escluso)</span></li>
     </ul>
   </section>
 
   <section>
-    <h2>Spuntino 2 <span class="hint">pomeriggio · scegli 1 opzione</span></h2>
-    <ul class="opt-group" data-group="spuntino2">
-      <li><input type="checkbox" data-noci="true"><span>150g Mirtilli + 15g Noci</span></li>
-      <li><input type="checkbox" data-noci="true"><span>150g Banana + 10g Noci</span></li>
-      <li><input type="checkbox"><span>1 Kiwi</span></li>
+    <h2>16:00-16:30 Merenda <span class="hint">~230 kcal | ~5g prot</span></h2>
+    <ul class="opt-group" data-group="merenda">
+      <li><input type="checkbox" data-noci="true"><span>1 Banana + 25g Noci (monodose) <span class="tag">ottimo pre/post allenamento</span></span></li>
+      <li><input type="checkbox"><span>1 Frutto di stagione + 15g Noci</span></li>
     </ul>
   </section>
 
   <section>
-    <h2>Cena <span class="hint">componi il pasto</span></h2>
-
-    <h3>Carboidrati — scegli 1</h3>
-    <ul class="opt-group" data-group="carbo">
-      <li><input type="checkbox"><span>80g Pasta / Riso / Grano Saraceno</span></li>
-      <li><input type="checkbox"><span>100g Pane</span></li>
-      <li><input type="checkbox"><span>350g Patate</span></li>
-    </ul>
+    <h2>20:00 Cena <span class="hint">~480 kcal | ~33g prot · componi il pasto</span></h2>
 
     <h3>Proteine — scegli 1</h3>
     <ul class="opt-group" data-group="proteine">
-      <li><input type="checkbox"><span>120g Pollo / Tacchino</span></li>
-      <li><input type="checkbox"><span>130g Macinato magro</span></li>
-      <li><input type="checkbox" data-fish-trigger="true"><span>150g Pesce (Merluzzo/Nasello/Orata) / 120g Tonno</span></li>
-      <li><input type="checkbox" data-fat-trigger="true"><span>180g Tofu</span></li>
-      <li><input type="checkbox" data-fat-trigger="true"><span>2 Uova + 150g Albume</span></li>
+      <li><input type="checkbox"><span>140-150g Pollo / Tacchino</span></li>
+      <li><input type="checkbox" data-fish-trigger="true"><span>140-150g Pesce magro (Merluzzo / Orata / Spigola / Tonno)</span></li>
+      <li><input type="checkbox" data-fat-trigger="true"><span>140-150g Tofu grigliato/al naturale</span></li>
+      <li><input type="checkbox" data-fat-trigger="true"><span>2 Uova + 100g Albume</span></li>
+    </ul>
+    <div style="font-size: 0.8rem; color: #6b6a63; margin-top: 4px;">
+      * Se serve raggiungere 85-90g di proteine giornaliere, aggiungi +20g di pollo/pesce a cena.
+    </div>
+
+    <h3>Carboidrati — scegli 1</h3>
+    <ul class="opt-group" data-group="carbo">
+      <li><input type="checkbox"><span>80-100g Riso / Pasta integrale / Grano Saraceno</span></li>
+      <li><input type="checkbox"><span>80-100g Pane integrale/di tipo 1</span></li>
+      <li><input type="checkbox"><span>250-300g Patate al vapore/forno</span></li>
     </ul>
 
     <h3>Contorno e Condimento</h3>
     <ul>
-      <li><input type="checkbox"><span>200g Verdure cotte</span></li>
-      <li class="oil-auto" id="oilBase"><input type="checkbox" id="oilTier15" data-oil="15"><span>15g Olio EVO <span class="tag">base</span></span></li>
-      <li class="oil-auto" id="oilMid"><input type="checkbox" id="oilTier10" data-oil="10"><span>10g Olio EVO <span class="tag">se hai scelto il pesce</span></span></li>
-      <li class="oil-auto" id="oilLow"><input type="checkbox" id="oilTier5" data-oil="5"><span>5g Olio EVO <span class="tag">se hai usato noci o uova/tofu</span></span></li>
+      <li><input type="checkbox"><span>200g Verdura cotta o cruda a piacere</span></li>
+      <li class="oil-auto" id="oilBase"><input type="checkbox" id="oilTier10" data-oil="10"><span>8–10g Olio EVO <span class="tag">base (~1 cucchiaio)</span></span></li>
+      <li class="oil-auto" id="oilLow"><input type="checkbox" id="oilTier5" data-oil="5"><span>5g Olio EVO <span class="tag">se hai usato noci/uova/tofu</span></span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Budget Flessibile Settimanale <span class="hint">~600-650 kcal totali / sett</span></h2>
+    <ul>
+      <li><input type="checkbox"><span>1 bicchiere di Vino (~100 kcal)</span></li>
+      <li><input type="checkbox"><span>1 Dolce / Brioche / Bounty (~280 kcal)</span></li>
+      <li><input type="checkbox"><span>1 Aperitivo / Cena fuori <span class="tag">riduci carboidrati agli altri pasti della giornata</span></span></li>
     </ul>
   </section>
 
@@ -267,8 +316,8 @@
       <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>8–9 — Marcato, fastidio o dolore continuo</span></li>
       <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>10 — Molto intenso, dolore forte, pancia visibilmente distesa</span></li>
     </ul>
-    <label>Note:</label>
-    <input type="text" placeholder="…">
+    <label>Note della giornata:</label>
+    <input type="text" placeholder="Es. livello energia, sensazione sazietà, allenamento svolto...">
     <label>Acqua bevuta oggi:</label>
     <ul class="opt-group" data-group="acqua">
       <li><input type="checkbox"><span>Meno di 1.5 l</span></li>
@@ -288,6 +337,16 @@
 <script>
   document.getElementById('today').textContent = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
+  function toggleDayType() {
+    const dayType = document.getElementById('dayType').value;
+    const breakSection = document.getElementById('sectionBreak');
+    if (dayType === 'casa') {
+      breakSection.style.opacity = '0.6';
+    } else {
+      breakSection.style.opacity = '1';
+    }
+  }
+
   // Radio-like behavior within each opt-group
   document.querySelectorAll('.opt-group').forEach(group=>{
     const boxes = group.querySelectorAll('input[type=checkbox]');
@@ -302,28 +361,26 @@
   });
 
   function updateOil(){
-    const nociChecked = document.querySelector('[data-noci="true"]:checked');
     const fatTriggerChecked = document.querySelector('[data-fat-trigger="true"]:checked');
-    const fishTriggerChecked = document.querySelector('[data-fish-trigger="true"]:checked');
 
-    let tier = 15;
-    if(nociChecked || fatTriggerChecked) tier = 5;
-    else if(fishTriggerChecked) tier = 10;
+    let tier = 10;
+    if(fatTriggerChecked) tier = 5;
 
     const boxes = {
-      15: { input: document.getElementById('oilTier15'), li: document.getElementById('oilBase') },
-      10: { input: document.getElementById('oilTier10'), li: document.getElementById('oilMid') },
+      10: { input: document.getElementById('oilTier10'), li: document.getElementById('oilBase') },
       5:  { input: document.getElementById('oilTier5'),  li: document.getElementById('oilLow') }
     };
 
     Object.entries(boxes).forEach(([val, box])=>{
-      box.li.classList.remove('flagged');
-      if(Number(val) !== tier){
-        box.input.checked = false;
-        box.input.disabled = true;
-      } else {
-        box.input.disabled = false;
-        box.li.classList.add('flagged');
+      if(box.li && box.input){
+        box.li.classList.remove('flagged');
+        if(Number(val) !== tier){
+          box.input.checked = false;
+          box.input.disabled = true;
+        } else {
+          box.input.disabled = false;
+          box.li.classList.add('flagged');
+        }
       }
     });
   }
@@ -352,7 +409,8 @@
 
   function buildSummaryHTML(){
     const dateStr = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    let html = `<h1>Diario Giornaliero — Piano Nutrizionale</h1><p class="pdate">${dateStr}</p>`;
+    const dayTypeLabel = document.getElementById('dayType').options[document.getElementById('dayType').selectedIndex].text;
+    let html = `<h1>Diario Giornaliero — Piano Nutrizionale</h1><p class="pdate">${dateStr} — <strong>${dayTypeLabel}</strong></p>`;
 
     function section(title, items){
       html += `<h2>${title}</h2>`;
@@ -363,11 +421,11 @@
       }
     }
 
-    section('Colazione', [...document.querySelectorAll('[data-group="colazione"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('Spuntino 1', document.querySelector('section:nth-of-type(2) li input').checked ? ['30g Cracker'] : []);
-    section('Spuntino 2', [...document.querySelectorAll('[data-group="spuntino2"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('Cena — Carboidrati', [...document.querySelectorAll('[data-group="carbo"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('Cena — Proteine', [...document.querySelectorAll('[data-group="proteine"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('06:00 Colazione', [...document.querySelectorAll('[data-group="colazione"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('10:30-11:00 Break / Pranzo (Panino)', [...document.querySelectorAll('[data-group="panino"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('16:00-16:30 Merenda', [...document.querySelectorAll('[data-group="merenda"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('20:00 Cena — Proteine', [...document.querySelectorAll('[data-group="proteine"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
+    section('20:00 Cena — Carboidrati', [...document.querySelectorAll('[data-group="carbo"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
 
     const contornoItems = [];
     const contornoLis = [...document.querySelectorAll('ul')].find(ul=>ul.querySelector('[data-oil]'));
@@ -403,3 +461,4 @@
 </script>
 </body>
 </html>
+
