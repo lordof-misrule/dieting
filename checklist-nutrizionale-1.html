@@ -723,8 +723,6 @@
 
         let lastPeriodStart = null;
 
-        // Costruisce una Date locale da una stringa "YYYY-MM-DD" evitando
-        // problemi di fuso orario che avrebbe `new Date(stringa)`.
         function parseDateInput(value) {
             const [y, m, d] = value.split('-').map(Number);
             return new Date(y, m - 1, d);
@@ -736,9 +734,6 @@
             return copy;
         }
 
-        // 1. Logica Calcolo Ciclo, basata sulla data reale di inizio ultimo ciclo.
-        // Usare oggetti Date invece di un numero fisso di giorni fa sì che mesi
-        // da 28, 29, 30 o 31 giorni vengano gestiti automaticamente e senza errori.
         function calculateCycle() {
             const badge = document.getElementById('cycle-days-left');
             const advice = document.getElementById('cycle-advice');
@@ -780,9 +775,6 @@
                     advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
                 }
             } else {
-                // Ciclo in ritardo rispetto ai 28 giorni: non si inventa un nuovo
-                // ciclo partito puntuale, si resta in stato di attesa finché
-                // l'utente non aggiorna la data con l'inizio effettivo.
                 const delayDays = daysSinceStart - CYCLE_LENGTH + 1;
                 badge.textContent = `Ciclo in ritardo di ${delayDays} gg`;
                 document.getElementById('phase-l').classList.add('active');
@@ -790,24 +782,24 @@
             }
         }
 
-        async function loadSavedDate() {
+        function loadSavedDate() {
             try {
-                const result = await window.storage.get(STORAGE_KEY, false);
-                if (result && result.value) {
-                    dateInput.value = result.value;
-                    lastPeriodStart = parseDateInput(result.value);
+                const savedVal = localStorage.getItem(STORAGE_KEY);
+                if (savedVal) {
+                    dateInput.value = savedVal;
+                    lastPeriodStart = parseDateInput(savedVal);
                 }
             } catch (err) {
-                // Nessuna data salvata ancora: si resta in stato "Inserisci una data".
+                console.error("Storage non accessibile", err);
             }
             calculateCycle();
         }
 
-        async function saveDate() {
+        function saveDate() {
             const value = dateInput.value;
             if (!value) return;
             try {
-                await window.storage.set(STORAGE_KEY, value, false);
+                localStorage.setItem(STORAGE_KEY, value);
                 lastPeriodStart = parseDateInput(value);
                 saveMsg.textContent = 'Data salvata.';
                 setTimeout(() => { saveMsg.textContent = ''; }, 2500);
@@ -819,7 +811,6 @@
 
         saveBtn.addEventListener('click', saveDate);
 
-        // 2. Calcolo Totali Nutrizionali e Regole Olio
         function updateTotalsAndRules() {
             let kcal = 0;
             let prot = 0;
