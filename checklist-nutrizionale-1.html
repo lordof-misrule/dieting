@@ -1,469 +1,409 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light">
-<title>Checklist Giornaliera — Piano Nutrizionale</title>
-<style>
-  :root{
-    --paper:#EFECE4;
-    --ink:#2B2A26;
-    --line:#C7C2B5;
-    --accent:#5B6B4F;
-    --accent-soft:#E4E7DC;
-    --warn:#8A5A3B;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-    line-height:1.5;
-    padding:32px 16px 80px;
-  }
-  @media (max-width:380px){
-    body{padding:20px 12px 70px;}
-    h1{font-size:1.3rem;}
-    li{font-size:0.9rem;}
-  }
-  .sheet{
-    max-width:640px;
-    margin:0 auto;
-  }
-  h1{
-    font-size:1.5rem;
-    font-weight:600;
-    letter-spacing:0.01em;
-    margin:0 0 4px;
-    border-bottom:2px solid var(--ink);
-    padding-bottom:10px;
-  }
-  .sub{
-    font-size:0.85rem;
-    color:#6b6a63;
-    margin:0 0 16px;
-  }
-  .sticky-counter {
-    position: sticky;
-    top: 10px;
-    z-index: 100;
-    background: var(--ink);
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.95rem;
-  }
-  .sticky-counter .val {
-    font-weight: bold;
-    color: #A3C9A8;
-  }
-  section{margin-bottom:24px;}
-  h2{
-    font-size:1rem;
-    font-weight:600;
-    margin:0 0 4px;
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-  }
-  h2 .hint{
-    font-size:0.72rem;
-    font-weight:400;
-    font-style:italic;
-    color:#8a887f;
-  }
-  h3{
-    font-size:0.82rem;
-    font-weight:600;
-    text-transform:none;
-    margin:14px 0 6px;
-    color:#55534b;
-  }
-  ul{list-style:none;margin:0;padding:0;}
-  li{
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    padding:6px 4px;
-    border-bottom:1px dotted var(--line);
-    font-size:0.95rem;
-  }
-  li:last-child{border-bottom:none;}
-  input[type=checkbox]{
-    width:17px;height:17px;
-    margin-top:2px;
-    accent-color:var(--accent);
-    flex-shrink:0;
-  }
-  .tag{
-    font-size:0.72rem;
-    color:#8a887f;
-    font-style:italic;
-    margin-left:6px;
-  }
-  .oil-auto{
-    transition:background 0.3s ease;
-  }
-  .oil-auto.flagged{
-    background:var(--accent-soft);
-    border-radius:4px;
-  }
-  .diary label{
-    display:block;
-    margin:10px 0 4px;
-    font-size:0.9rem;
-  }
-  .diary .row{display:flex;gap:18px;align-items:center;margin-bottom:8px;}
-  .diary input[type=text]{
-    border:none;
-    border-bottom:1px solid var(--ink);
-    background:transparent;
-    font-family:inherit;
-    font-size:0.95rem;
-    padding:2px 4px;
-    width:100%;
-  }
-  .scale{margin:6px 0 14px;}
-  .scale li{
-    padding:4px 4px 4px 10px;
-    font-size:0.88rem;
-    border-bottom:1px dotted var(--line);
-    border-left:3px solid transparent;
-  }
-  .scale input[type=checkbox]{width:15px;height:15px;}
-  .scale .dot{
-    display:inline-block;
-    width:9px;height:9px;
-    border-radius:50%;
-    margin-right:8px;
-    flex-shrink:0;
-    align-self:center;
-  }
-  .scale li[data-sev="red"]{border-left-color:#A6503A;}
-  .scale li[data-sev="yellow"]{border-left-color:#C79A3B;}
-  .scale li[data-sev="green"]{border-left-color:#5B6B4F;}
-  .scale .dot.red{background:#A6503A;}
-  .scale .dot.yellow{background:#C79A3B;}
-  .scale .dot.green{background:#5B6B4F;}
-  .actions{
-    display:flex;
-    gap:10px;
-    margin-top:30px;
-    flex-wrap:wrap;
-  }
-  .reset, .save-pdf{
-    font-size:0.8rem;
-    background:none;
-    border:1px solid var(--line);
-    padding:6px 12px;
-    border-radius:4px;
-    cursor:pointer;
-    color:#6b6a63;
-  }
-  .save-pdf{
-    background:var(--accent);
-    border-color:var(--accent);
-    color:#fff;
-  }
-  .save-pdf:hover{opacity:0.9;}
-  @media print{
-    body{background:#fff;padding:0;}
-    .reset, .sticky-counter{display:none;}
-    .oil-auto.flagged{background:none;}
-  }
-  .print-summary{display:none;}
-  .print-summary h1{font-size:1.3rem;border-bottom:2px solid #000;padding-bottom:8px;}
-  .print-summary .pdate{font-size:0.85rem;color:#555;margin:4px 0 20px;}
-  .print-summary h2{font-size:1rem;margin:16px 0 6px;border-bottom:1px solid #ccc;padding-bottom:3px;}
-  .print-summary ul{list-style:none;margin:0 0 4px;padding:0;}
-  .print-summary li{padding:3px 0;font-size:0.95rem;}
-  .print-summary .empty{font-style:italic;color:#888;font-size:0.9rem;}
-  body.print-mode .sheet{display:none;}
-  @media print{
-    body.print-mode .print-summary{display:block;}
-    body:not(.print-mode) .print-summary{display:none;}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Giornaliera Piano Nutrizionale</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #27ae60;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border: #e9ecef;
+            --text: #333333;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px 12px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 0 0 6px 0;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .card-meta {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin: 12px 0 6px 0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label.check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 0;
+        }
+
+        label.check-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .radio-btn {
+            position: relative;
+        }
+
+        .radio-btn input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .radio-btn label {
+            display: block;
+            text-align: center;
+            padding: 8px 4px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-btn input:checked + label {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .badge-max {
+            font-size: 0.75rem;
+            color: #d35400;
+            font-weight: normal;
+        }
+    </style>
 </head>
 <body>
-<div class="sheet">
-  <h1>Checklist Giornaliera — Piano Nutrizionale</h1>
-  <p class="sub" id="today"></p>
 
-  <div class="sticky-counter">
-    <span>Totale Selezionato:</span>
-    <div>
-      <span class="val" id="totalKcal">0</span> kcal | 
-      <span class="val" id="totalProt">0</span>g prot
+<div class="container">
+
+    <header>
+        <h1>Checklist Piano Nutrizionale</h1>
+        <div class="subtitle">Monitoraggio Giornaliero e Sintomi</div>
+    </header>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">06:00 Colazione</span>
+            <span class="card-meta">~320-350 kcal | ~18-24g prot</span>
+        </div>
+        <div class="section-subtitle">Scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>60g Pane + 2 Uova + Kiwi / Mirtilli / Banana (150g)</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>French Toast: 60g Pane + 1 Uovo + 120-150g Albume + 20g Marmellata</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Pancake: 50g Farina + 1 Uovo + 120-150g Albume + 20g Marmellata</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>60g Pane + 100g Ricotta di capra + 15-20g Marmellata <span class="badge-max">(max 1×/settimana)</span></span>
+            </label>
+        </div>
     </div>
-  </div>
 
-  <section>
-    <h2>06:00 Colazione <span class="hint">~320-350 kcal | ~18-24g prot · scegli 1 opzione</span></h2>
-    <ul class="opt-group" data-group="colazione">
-      <li><input type="checkbox" data-kcal="330" data-prot="19"><span>60g Pane + 2 Uova + Kiwi / Mirtilli / Banana</span></li>
-      <li><input type="checkbox" data-kcal="340" data-prot="22"><span>French Toast: 60g Pane + 1 Uovo + 120-150g Albume + 20g Marmellata</span></li>
-      <li><input type="checkbox" data-kcal="350" data-prot="22"><span>Pancake: 50g Farina + 1 Uovo + 120-150g Albume + 20g Marmellata</span></li>
-      <li><input type="checkbox" data-kcal="320" data-prot="18"><span>60g Pane + 100g Ricotta di capra + 15-20g Marmellata <span class="tag">max 1×/settimana</span></span></li>
-      <li><input type="checkbox" data-kcal="330" data-prot="19"><span>50g Grana / Parmigiano + 60g Pane integrale</span></li>
-      <li><input type="checkbox" data-kcal="310" data-prot="20"><span>60g Bresaola / Tacchino + 60g Pane</span></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>10:30-11:00 Metà Mattina <span class="hint">~130 kcal | ~3g prot</span></h2>
-    <ul>
-      <li><input type="checkbox" data-kcal="130" data-prot="3"><span>30g Cracker integrali / acidi</span></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>13:00 Pranzo Rapido <span class="hint">~400-430 kcal | ~26-30g prot · scegli 1 opzione</span></h2>
-    <ul class="opt-group" data-group="pranzo">
-      <li><input type="checkbox" data-kcal="410" data-prot="28"><span>Panino con tonno: 80g Pane + 100-120g Tonno al naturale</span></li>
-      <li><input type="checkbox" data-kcal="420" data-prot="30"><span>Panino con carne: 80g Pane + 100-120g Pollo / Tacchino</span></li>
-      <li><input type="checkbox" data-kcal="400" data-prot="26"><span>Pasta con tonno: 60-70g Pasta/Riso + 100-120g Tonno al naturale</span></li>
-      <li><input type="checkbox" data-kcal="410" data-prot="28"><span>Pasta con carne: 60-70g Pasta/Riso + 100-120g Pollo / Tacchino</span></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>16:00-16:30 Merenda <span class="hint">~150 kcal | ~2g prot</span></h2>
-    <ul>
-      <li><input type="checkbox" data-kcal="150" data-prot="2" data-fat-trigger="true"><span>150g Mirtilli / Banana + 10g Noci</span></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>20:00 Cena <span class="hint">~480-520 kcal | ~33g prot · componi il pasto</span></h2>
-
-    <h3>Proteine — scegli 1</h3>
-    <ul class="opt-group" data-group="proteine">
-      <li><input type="checkbox" data-kcal="165" data-prot="31"><span>120-150g Pollo / Tacchino</span></li>
-      <li><input type="checkbox" data-kcal="140" data-prot="28"><span>150g Pesce magro (Merluzzo / Orata / Spigola / Tonno)</span></li>
-      <li><input type="checkbox" data-kcal="200" data-prot="16" data-fat-trigger="true"><span>180-200g Tofu al naturale</span></li>
-      <li><input type="checkbox" data-kcal="190" data-prot="20" data-fat-trigger="true"><span>2 Uova + 100-120g Albume</span></li>
-    </ul>
-
-    <h3>Carboidrati — scegli 1</h3>
-    <ul class="opt-group" data-group="carbo">
-      <li><input type="checkbox" data-kcal="260" data-prot="7"><span>70-80g Pasta / Riso / Grano Saraceno</span></li>
-      <li><input type="checkbox" data-kcal="240" data-prot="8"><span>80g Pane integrale / di tipo 1</span></li>
-    </ul>
-
-    <h3>Contorno e Condimento</h3>
-    <ul>
-      <li><input type="checkbox" data-kcal="40" data-prot="2"><span>200g Verdura cotta tollerata</span></li>
-      <li class="oil-auto" id="oilBase"><input type="checkbox" id="oilTier10" data-oil="10" data-kcal="90" data-prot="0"><span>10g Olio EVO <span class="tag">base (~1 cucchiaio)</span></span></li>
-      <li class="oil-auto" id="oilLow"><input type="checkbox" id="oilTier5" data-oil="5" data-kcal="45" data-prot="0"><span>5g Olio EVO <span class="tag">se hai usato noci/uova/tofu</span></span></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Budget Flessibile Settimanale <span class="hint">~600-650 kcal totali / sett</span></h2>
-    <ul>
-      <li><input type="checkbox" data-kcal="100" data-prot="0"><span>1 bicchiere di Vino (~100 kcal)</span></li>
-      <li><input type="checkbox" data-kcal="280" data-prot="2"><span>1 Dolce / Brioche / Bounty (~280 kcal)</span></li>
-      <li><input type="checkbox" data-kcal="300" data-prot="5"><span>1 Aperitivo / Cena fuori <span class="tag">riduci carboidrati agli altri pasti della giornata</span></span></li>
-    </ul>
-  </section>
-
-  <section class="diary">
-    <h2>Diario Sintomi <span class="hint">fine giornata</span></h2>
-    <div class="row">
-      <label style="margin:0;">Evacuazione:</label>
-      <label style="margin:0;"><input type="checkbox" name="evac" style="width:15px;height:15px;"> Sì</label>
-      <label style="margin:0;"><input type="checkbox" name="evac" style="width:15px;height:15px;"> No</label>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">10:30–11:00 Metà Mattina</span>
+            <span class="card-meta">~116 kcal | ~3g prot</span>
+        </div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>30g Cracker</span>
+            </label>
+        </div>
     </div>
-    <label>Scala Bristol (tipo 1–7):</label>
-    <ul class="opt-group scale" data-group="bristol">
-      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>Tipo 1 — Pallini duri e separati <span class="tag">difficile da espellere</span></span></li>
-      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>Tipo 2 — A forma di salsiccia, ma grumosa</span></li>
-      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>Tipo 3 — A forma di salsiccia, con crepe in superficie</span></li>
-      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>Tipo 4 — A forma di salsiccia/serpente, liscia e morbida <span class="tag">ideale</span></span></li>
-      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>Tipo 5 — Pezzi morbidi a bordi netti <span class="tag">facile da espellere</span></span></li>
-      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>Tipo 6 — Pezzi soffici a bordi frastagliati, pastoso</span></li>
-      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>Tipo 7 — Acquoso, senza pezzi solidi</span></li>
-    </ul>
-    <label>Gonfiore addominale:</label>
-    <ul class="opt-group scale" data-group="gonfiore">
-      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>0–1 — Assente, pancia normale</span></li>
-      <li data-sev="green"><input type="checkbox"><span><span class="dot green"></span>2–3 — Lieve, appena percettibile</span></li>
-      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>4–5 — Moderato, si nota ma non dà fastidio</span></li>
-      <li data-sev="yellow"><input type="checkbox"><span><span class="dot yellow"></span>6–7 — Evidente, pancia tesa/dura, jeans che stringono</span></li>
-      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>8–9 — Marcato, fastidio o dolore continuo</span></li>
-      <li data-sev="red"><input type="checkbox"><span><span class="dot red"></span>10 — Molto intenso, dolore forte, pancia visibilmente distesa</span></li>
-    </ul>
-    <label>Note della giornata / Peso del mattino:</label>
-    <input type="text" placeholder="Es. Peso 58.2kg, energia, sazietà, allenamento...">
-    <label>Acqua bevuta oggi:</label>
-    <ul class="opt-group" data-group="acqua">
-      <li><input type="checkbox"><span>Meno di 1.5 l</span></li>
-      <li><input type="checkbox"><span>1.5 l</span></li>
-      <li><input type="checkbox"><span>Più di 1.5 l</span></li>
-    </ul>
-  </section>
 
-  <div class="actions">
-    <button class="save-pdf" onclick="scaricaPDF();">Scarica PDF di oggi</button>
-    <button class="reset" onclick="document.querySelectorAll('input').forEach(i=>{i.checked=false; i.value='';}); updateOil(); calculateTotals();">Azzera checklist</button>
-  </div>
-</div>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">13:00 Pranzo</span>
+            <span class="card-meta">~400-430 kcal | ~26-30g prot</span>
+        </div>
+        <div class="section-subtitle">Carboidrati & Proteine — scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Panino 80g con 100-120g Tonno al naturale</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Panino 80g con 100-120g Pollo / Tacchino</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>60-70g Pasta/Riso + 100-120g Tonno al naturale</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>60-70g Pasta/Riso + 100-120g Pollo / Tacchino</span>
+            </label>
+        </div>
 
-<div class="print-summary" id="printSummary"></div>
+        <div class="section-subtitle">Contorno e Condimento Pranzo</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>100–150g Verdura</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>5g Olio EVO</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>10g Olio EVO</span>
+            </label>
+        </div>
+    </div>
 
-<script>
-  document.getElementById('today').textContent = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">16:00–16:30 Merenda</span>
+            <span class="card-meta">~150-175 kcal | ~2-3g prot</span>
+        </div>
+        <div class="section-subtitle">Componi il pasto</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>150g Mirtilli</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>150g Banana</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>10g Noci</span>
+            </label>
+        </div>
+    </div>
 
-  function calculateTotals() {
-    let totalKcal = 0;
-    let totalProt = 0;
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">20:00 Cena</span>
+            <span class="card-meta">~480-520 kcal | ~33g prot</span>
+        </div>
+        
+        <div class="section-subtitle">Proteine — scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>120g Pollo / Tacchino</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>120g Tonno al naturale sgocciolato</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>150g Nasello</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>150g Orata / Spigola</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>130g Macinato magro</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>180-200g Tofu al naturale</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>2 Uova + 150g Albume</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>100g Mozzarella + 100g Albume <span class="badge-max">(max 1×/settimana)</span></span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>40g Grana / Parmigiano + 150g Albume <span class="badge-max">(max 1×/settimana)</span></span>
+            </label>
+        </div>
 
-    document.querySelectorAll('input[type=checkbox]:checked').forEach(box => {
-      const kcal = parseInt(box.getAttribute('data-kcal')) || 0;
-      const prot = parseInt(box.getAttribute('data-prot')) || 0;
-      totalKcal += kcal;
-      totalProt += prot;
-    });
+        <div class="section-subtitle">Carboidrati — scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>70-80g Pasta / Riso / Grano Saraceno</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>80g Pane</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>250-300g Patate</span>
+            </label>
+        </div>
 
-    document.getElementById('totalKcal').textContent = totalKcal;
-    document.getElementById('totalProt').textContent = totalProt;
-  }
+        <div class="section-subtitle">Contorno e Condimento Cena</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>200g Verdura cotta</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>5g Olio EVO</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>10g Olio EVO</span>
+            </label>
+        </div>
+    </div>
 
-  document.querySelectorAll('.opt-group').forEach(group=>{
-    const boxes = group.querySelectorAll('input[type=checkbox]');
-    boxes.forEach(box=>{
-      box.addEventListener('change', ()=>{
-        if(box.checked){
-          boxes.forEach(other=>{ if(other!==box) other.checked=false; });
-        }
-        updateOil();
-        calculateTotals();
-      });
-    });
-  });
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Budget Flessibile Settimanale</span>
+            <span class="card-meta">~600-650 kcal totali / sett</span>
+        </div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Bicchiere di vino</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Brioche / dolce / barretta / snack</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Aperitivo</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox">
+                <span>Pasto al ristorante</span>
+            </label>
+        </div>
+    </div>
 
-  document.querySelectorAll('input[type=checkbox]').forEach(box=>{
-    box.addEventListener('change', ()=>{
-      updateOil();
-      calculateTotals();
-    });
-  });
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Diario Sintomi (Fine Giornata)</span>
+        </div>
 
-  function updateOil(){
-    const fatTriggerChecked = document.querySelector('[data-fat-trigger="true"]:checked');
+        <div class="section-subtitle">Evacuazione</div>
+        <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="radio-btn">
+                <input type="radio" id="eva-si" name="evacuazione">
+                <label for="eva-si">Sì</label>
+            </div>
+            <div class="radio-btn">
+                <input type="radio" id="eva-no" name="evacuazione">
+                <label for="eva-no">No</label>
+            </div>
+        </div>
 
-    let tier = 10;
-    if(fatTriggerChecked) tier = 5;
-
-    const boxes = {
-      10: { input: document.getElementById('oilTier10'), li: document.getElementById('oilBase') },
-      5:  { input: document.getElementById('oilTier5'),  li: document.getElementById('oilLow') }
-    };
-
-    Object.entries(boxes).forEach(([val, box])=>{
-      if(box.li && box.input){
-        box.li.classList.remove('flagged');
-        if(Number(val) !== tier){
-          box.input.checked = false;
-          box.input.disabled = true;
-        } else {
-          box.input.disabled = false;
-          box.li.classList.add('flagged');
-        }
-      }
-    });
-  }
-
-  updateOil();
-  calculateTotals();
-
-  function getLabel(li){
-    const clone = li.cloneNode(true);
-    clone.querySelectorAll('.tag').forEach(t=>t.remove());
-    clone.querySelectorAll('input').forEach(i=>i.remove());
-    return clone.textContent.trim();
-  }
-
-  function scaricaPDF(){
-    document.getElementById('printSummary').innerHTML = buildSummaryHTML();
-
-    const originalTitle = document.title;
-    const fileDate = new Date().toISOString().slice(0,10);
-    document.title = `diario-nutrizionale-${fileDate}`;
-
-    document.body.classList.add('print-mode');
-    window.print();
-    document.body.classList.remove('print-mode');
-    document.title = originalTitle;
-  }
-
-  function buildSummaryHTML(){
-    const dateStr = new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    const totKcal = document.getElementById('totalKcal').textContent;
-    const totProt = document.getElementById('totalProt').textContent;
-
-    let html = `<h1>Diario Giornaliero — Piano Nutrizionale</h1>
-    <p class="pdate">${dateStr}</p>
-    <div style="background:#f0f0f0; padding:10px; border-radius:4px; margin-bottom:15px;">
-      <strong>Totale Giornaliero Calcolato:</strong> ${totKcal} kcal | ${totProt}g Proteine
-    </div>`;
-
-    function section(title, items){
-      html += `<h2>${title}</h2>`;
-      if(items.length === 0){
-        html += `<p class="empty">Nessuna voce selezionata</p>`;
-      } else {
-        html += '<ul>' + items.map(t=>`<li>• ${t}</li>`).join('') + '</ul>';
-      }
-    }
-
-    section('06:00 Colazione', [...document.querySelectorAll('[data-group="colazione"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('10:30-11:00 Metà Mattina', [...document.querySelectorAll('section:nth-of-type(2) li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('13:00 Pranzo Rapido', [...document.querySelectorAll('[data-group="pranzo"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('16:00-16:30 Merenda', [...document.querySelectorAll('section:nth-of-type(4) li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('20:00 Cena — Proteine', [...document.querySelectorAll('[data-group="proteine"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-    section('20:00 Cena — Carboidrati', [...document.querySelectorAll('[data-group="carbo"] li')].filter(li=>li.querySelector('input').checked).map(getLabel));
-
-    const contornoItems = [];
-    const contornoLis = [...document.querySelectorAll('ul')].find(ul=>ul.querySelector('[data-oil]'));
-    if(contornoLis){
-      [...contornoLis.querySelectorAll('li')].forEach(li=>{
-        const input = li.querySelector('input');
-        if(input.checked) contornoItems.push(getLabel(li));
-      });
-    }
-    section('Contorno e Condimento', contornoItems);
-
-    const evacBoxes = document.querySelectorAll('[name="evac"]');
-    const evacChecked = [...evacBoxes].find(b=>b.checked);
-    const evacLabel = evacChecked ? (evacBoxes[0]===evacChecked ? 'Sì' : 'No') : '—';
-    const bristolChecked = document.querySelector('[data-group="bristol"] input:checked');
-    const bristolLabel = bristolChecked ? getLabel(bristolChecked.closest('li')) : '—';
-    const gonfioreChecked = document.querySelector('[data-group="gonfiore"] input:checked');
-    const gonfioreLabel = gonfioreChecked ? getLabel(gonfioreChecked.closest('li')) : '—';
-    const acquaChecked = document.querySelector('[data-group="acqua"] input:checked');
-    const acquaLabel = acquaChecked ? getLabel(acquaChecked.closest('li')) : '—';
-    const note = document.querySelectorAll('.diary input[type=text]')[0]?.value || '';
-
-    html += `<h2>Diario Sintomi</h2><ul>
-      <li>Evacuazione: ${evacLabel}</li>
-      <li>Scala Bristol: ${bristolLabel}</li>
-      <li>Gonfiore addominale: ${gonfioreLabel}</li>
-      <li>Acqua: ${acquaLabel}</li>
-      ${note ? `<li>Note / Peso: ${note}</li>` : ''}
-    </ul>`;
-
-    return html;
-  }
-</script>
-</body>
-  </html>
-  
+        <div class="section-subtitle">Scala Bristol (Tipo 1–7)</div>
+        <div class="radio-grid">
+            <div class="radio-btn"><input type="radio" id="b1" name="bristol"><label for="b1">T1</label></div>
+            <div class="radio-btn"><input type="radio" id="b2" name="bristol"><label for="b2">T2</label></div>
+            <div class="radio-btn"><input type="radio" id="b3" name="bristol"><label for="b3">T3</label></div>
+            <div class="radio-btn"><input type="radio"
