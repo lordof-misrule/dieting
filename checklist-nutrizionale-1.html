@@ -116,7 +116,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--text-muted);
-            margin: 12px 0 6px 0;
+            margin: 14px 0 8px 0;
         }
 
         .checkbox-group {
@@ -246,80 +246,105 @@
             margin-bottom: 8px;
         }
 
-        /* Radio Buttons Grid & Colors */
-        .radio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 6px;
-            margin-top: 6px;
+        /* STILI DIARIO SINTOMI (Nuovi Bottoni) */
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .radio-grid-2 { grid-template-columns: 1fr 1fr; }
-        .radio-grid-3 { grid-template-columns: repeat(3, 1fr); }
-        .radio-grid-5 { grid-template-columns: repeat(5, 1fr); }
-
-        .radio-btn {
-            position: relative;
-        }
-
-        .radio-btn input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .radio-btn label {
-            display: block;
+        .btn-option {
+            flex: 1;
+            min-width: 60px;
+            padding: 10px 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
             text-align: center;
-            padding: 8px 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-option:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-option.active {
+            background-color: #e8f8f5;
+            border-color: var(--accent);
+            color: #1b8744;
+            font-weight: 600;
+        }
+
+        .description-text {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            background-color: var(--bg);
+            padding: 8px 12px;
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+            display: none;
+        }
+
+        #bristol-section {
+            display: none;
+        }
+
+        /* Wheel Picker Styling (Peso) */
+        .picker-container {
+            position: relative;
+            height: 120px;
+            overflow: hidden;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.85rem;
-            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .picker-list {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            padding: 40px 0;
+            box-sizing: border-box;
+            scrollbar-width: none;
+        }
+
+        .picker-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .picker-item {
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #a0aec0;
+            scroll-snap-align: center;
             transition: all 0.2s;
         }
 
-        /* Colorazione Semaforica */
-        .radio-btn.btn-good input:checked + label {
-            background: #27ae60;
-            color: white;
-            border-color: #27ae60;
-            font-weight: 600;
+        .picker-item.selected {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
         }
 
-        .radio-btn.btn-warn input:checked + label {
-            background: #e67e22;
-            color: white;
-            border-color: #e67e22;
-            font-weight: 600;
-        }
-
-        .radio-btn.btn-alert input:checked + label {
-            background: #e74c3c;
-            color: white;
-            border-color: #e74c3c;
-            font-weight: 600;
-        }
-
-        .radio-btn input:checked + label {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            font-weight: 600;
-        }
-
-        .bristol-legend {
-            background: #f1f3f5;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 8px;
-            font-size: 0.78rem;
-            color: #495057;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .picker-selection-highlight {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            border-top: 2px solid var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background-color: rgba(39, 174, 96, 0.05);
+            pointer-events: none;
         }
 
         textarea {
@@ -333,6 +358,11 @@
             margin-top: 6px;
             resize: vertical;
             min-height: 70px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
         .badge-max {
@@ -403,8 +433,8 @@
             .print-summary-container h1 {
                 font-size: 1.2rem;
                 margin: 0 0 2px 0;
-                color: #2c3e50;
-                border-bottom: 2px solid #2c3e50;
+                color: var(--primary);
+                border-bottom: 2px solid var(--primary);
                 padding-bottom: 4px;
             }
 
@@ -428,7 +458,7 @@
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 margin: 10px 0 4px 0;
-                color: #2c3e50;
+                color: var(--primary);
                 border-bottom: 1px solid #ddd;
                 padding-bottom: 2px;
             }
@@ -697,49 +727,65 @@
         </div>
 
         <div class="section-subtitle">Evacuazione</div>
-        <div class="radio-grid radio-grid-2">
-            <div class="radio-btn btn-good"><input type="radio" id="eva-si" name="evacuazione" value="Sì"><label for="eva-si">Sì</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="eva-no" name="evacuazione" value="No"><label for="eva-no">No</label></div>
+        <div class="button-group" data-group="evacuazione">
+            <button type="button" class="btn-option" onclick="selectEvacuazione('Sì', this)">Sì</button>
+            <button type="button" class="btn-option" onclick="selectEvacuazione('No', this)">No</button>
         </div>
 
-        <div class="section-subtitle">Scala Bristol (Tipo 1–7)</div>
-        <div class="radio-grid">
-            <div class="radio-btn btn-alert"><input type="radio" id="b1" name="bristol" value="Tipo 1 (Palline dure e separati)"><label for="b1">T1</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="b2" name="bristol" value="Tipo 2 (Salsiccia grumosa)"><label for="b2">T2</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="b3" name="bristol" value="Tipo 3 (Salsiccia con crepe)"><label for="b3">T3</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="b4" name="bristol" value="Tipo 4 (Salsiccia liscia e morbida)"><label for="b4">T4</label></div>
-            <div class="radio-btn btn-warn"><input type="radio" id="b5" name="bristol" value="Tipo 5 (Pezzi morbidi)"><label for="b5">T5</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="b6" name="bristol" value="Tipo 6 (Poltacea/sfilacciata)"><label for="b6">T6</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="b7" name="bristol" value="Tipo 7 (Acquosa)"><label for="b7">T7</label></div>
-        </div>
-        <div class="bristol-legend">
-            <div><strong>T1:</strong> Palline dure e separate</div>
-            <div><strong>T2:</strong> A forma di salsiccia ma con grumi</div>
-            <div><strong>T3:</strong> Come una salsiccia con crepe in superficie</div>
-            <div><strong>T4:</strong> Salsiccia liscia e morbida</div>
-            <div><strong>T5:</strong> Pezzi morbidi con bordi ben definiti</div>
-            <div><strong>T6:</strong> Pezzi sfilacciati, consistenza poltacea</div>
-            <div><strong>T7:</strong> Acquosa, nessun pezzo solido</div>
+        <div id="bristol-section">
+            <div class="section-subtitle">Scala Bristol (Tipo 1-7)</div>
+            <div class="button-group" data-group="bristol">
+                <button type="button" class="btn-option" onclick="selectBristol('T1', 'Palline dure e separate, difficili da evacuare.', this)">T1</button>
+                <button type="button" class="btn-option" onclick="selectBristol('T2', 'A forma di salsiccia ma con grumi.', this)">T2</button>
+                <button type="button" class="btn-option" onclick="selectBristol('T3', 'Come una salsiccia con crepe in superficie.', this)">T3</button>
+                <button type="button" class="btn-option" onclick="selectBristol('T4', 'Salsiccia liscia e morbida.', this)">T4</button>
+                <button type="button" class="btn-option" onclick="selectBristol('T5', 'Pezzi morbidi con bordi ben definiti.', this)">T5</button>
+                <button type="button" class="btn-option" onclick="selectBristol('T6', 'Pezzi sfilacciati, consistenza poltacea.', this)">T6</button>
+                <button type="button" class="btn-option" onclick="selectBristol('T7', 'Acquosa, nessun pezzo solido.', this)">T7</button>
+            </div>
+            <div id="bristol-desc" class="description-text"></div>
         </div>
 
         <div class="section-subtitle">Gonfiore Addominale</div>
-        <div class="radio-grid radio-grid-5">
-            <div class="radio-btn btn-good"><input type="radio" id="g1" name="gonfiore" value="0–1 (Assente)"><label for="g1">0–1</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="g2" name="gonfiore" value="2–3 (Lieve)"><label for="g2">2–3</label></div>
-            <div class="radio-btn btn-warn"><input type="radio" id="g3" name="gonfiore" value="4–5 (Moderato)"><label for="g3">4–5</label></div>
-            <div class="radio-btn btn-warn"><input type="radio" id="g4" name="gonfiore" value="6–7 (Evidente)"><label for="g4">6–7</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="g5" name="gonfiore" value="8–10 (Marcato)"><label for="g5">8–10</label></div>
+        <div class="button-group" data-group="gonfiore">
+            <button type="button" class="btn-option" onclick="selectGonfiore('0-1', 'Addome disteso e sensazione di leggerezza fisiologica.', this)">0-1</button>
+            <button type="button" class="btn-option" onclick="selectGonfiore('2-3', 'Lievissima tensione addominale, senza disagio o limitazioni.', this)">2-3</button>
+            <button type="button" class="btn-option" onclick="selectGonfiore('4-5', 'Tensione e gonfiore percepibili.', this)">4-5</button>
+            <button type="button" class="btn-option" onclick="selectGonfiore('6-7', 'Sensibile distensione addominale con sensazione di pesantezza e fastidio.', this)">6-7</button>
+            <button type="button" class="btn-option" onclick="selectGonfiore('8-10', 'Forte tensione addominale e disagio marcato.', this)">8-10</button>
+        </div>
+        <div id="gonfiore-desc" class="description-text"></div>
+
+        <div class="section-subtitle">Attività Fisica / Allenamento</div>
+        <div class="button-group" data-group="allenamento">
+            <button type="button" class="btn-option" onclick="selectOption(this)">No</button>
+            <button type="button" class="btn-option" onclick="selectOption(this)">Sì (con PT)</button>
+            <button type="button" class="btn-option" onclick="selectOption(this)">Sì (Autonomo)</button>
+        </div>
+
+        <div class="section-subtitle">Qualità del Sonno</div>
+        <div class="button-group" data-group="sonno">
+            <button type="button" class="btn-option" onclick="selectOption(this)">Scarso</button>
+            <button type="button" class="btn-option" onclick="selectOption(this)">Sufficiente</button>
+            <button type="button" class="btn-option" onclick="selectOption(this)">Buono</button>
         </div>
 
         <div class="section-subtitle">Acqua Bevuta</div>
-        <div class="radio-grid radio-grid-3">
-            <div class="radio-btn btn-alert"><input type="radio" id="a1" name="acqua" value="< 1.8 L"><label for="a1">&lt; 1.8 L</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="a2" name="acqua" value="1.8 L"><label for="a2">1.8 L</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="a3" name="acqua" value="≥ 2.0 L"><label for="a3">≥ 2.0 L</label></div>
+        <div class="button-group" data-group="acqua">
+            <button type="button" class="btn-option" onclick="selectOption(this)">&lt; 1.8 L</button>
+            <button type="button" class="btn-option" onclick="selectOption(this)">1.8 L</button>
+            <button type="button" class="btn-option" onclick="selectOption(this)">&ge; 2.0 L</button>
         </div>
 
-        <div class="section-subtitle">Note / Peso del mattino</div>
-        <textarea id="diary-notes" placeholder="Inserisci note su peso, energia o altri sintomi..."></textarea>
+        <div class="section-subtitle">Peso del Mattino (kg)</div>
+        <div class="picker-container">
+            <div class="picker-selection-highlight"></div>
+            <div class="picker-list" id="weight-picker" onscroll="handlePickerScroll()">
+                </div>
+        </div>
+
+        <div class="section-subtitle">Note / Altri Sintomi</div>
+        <textarea id="diary-notes" placeholder="Inserisci note su energia, alimentazione o altri sintomi..."></textarea>
     </div>
 
 </div>
@@ -757,6 +803,7 @@
     const STORAGE_KEY = 'last-period-start-date';
 
     document.addEventListener('DOMContentLoaded', () => {
+        // ---- LOGICA DIETA E CHECKLIST ----
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const totalKcalEl = document.getElementById('total-kcal');
         const totalProtEl = document.getElementById('total-prot');
@@ -766,100 +813,6 @@
         const checkOlio10 = document.getElementById('check-olio-10');
         const itemOlio5 = document.getElementById('item-olio-5');
         const itemOlio10 = document.getElementById('item-olio-10');
-
-        const dateInput = document.getElementById('last-period-input');
-        const saveBtn = document.getElementById('save-period-btn');
-        const saveMsg = document.getElementById('cycle-save-msg');
-
-        let lastPeriodStart = null;
-
-        function parseDateInput(value) {
-            const [y, m, d] = value.split('-').map(Number);
-            return new Date(y, m - 1, d);
-        }
-
-        function toDateOnly(d) {
-            const copy = new Date(d);
-            copy.setHours(0, 0, 0, 0);
-            return copy;
-        }
-
-        function calculateCycle() {
-            const badge = document.getElementById('cycle-days-left');
-            const advice = document.getElementById('cycle-advice');
-
-            document.querySelectorAll('.phase-box').forEach(el => el.classList.remove('active'));
-
-            if (!lastPeriodStart) {
-                badge.textContent = 'Inserisci una data';
-                advice.textContent = "Inserisci la data di inizio dell'ultimo ciclo per attivare il monitoraggio.";
-                return;
-            }
-
-            const today = toDateOnly(new Date());
-            const start = toDateOnly(lastPeriodStart);
-            const daysSinceStart = Math.round((today - start) / (1000 * 60 * 60 * 24));
-
-            if (daysSinceStart < 0) {
-                badge.textContent = 'Data non valida';
-                advice.textContent = "La data inserita è nel futuro: controlla il giorno di inizio ciclo.";
-                return;
-            }
-
-            if (daysSinceStart < CYCLE_LENGTH) {
-                const cycleDay = daysSinceStart + 1;
-                const daysLeft = CYCLE_LENGTH - daysSinceStart;
-                badge.textContent = `-${daysLeft} gg al ciclo (giorno ${cycleDay})`;
-
-                if (cycleDay <= 5) {
-                    document.getElementById('phase-m').classList.add('active');
-                    advice.textContent = "Fase Mestruale: Calo energetico e possibile ritenzione. Mantieni un buon apporto idrico.";
-                } else if (cycleDay <= 13) {
-                    document.getElementById('phase-f').classList.add('active');
-                    advice.textContent = "Fase Follicolare: Energia e sensibilità insulinica ottimali.";
-                } else if (cycleDay <= 16) {
-                    document.getElementById('phase-o').classList.add('active');
-                    advice.textContent = "Fase Ovulatoria: Picco ormonale ed energetico.";
-                } else {
-                    document.getElementById('phase-l').classList.add('active');
-                    advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
-                }
-            } else {
-                const delayDays = daysSinceStart - CYCLE_LENGTH + 1;
-                badge.textContent = `Ciclo in ritardo di ${delayDays} gg`;
-                document.getElementById('phase-l').classList.add('active');
-                advice.textContent = "Ciclo in ritardo rispetto ai 28 giorni standard. Aggiorna la data non appena inizia il nuovo ciclo.";
-            }
-        }
-
-        function loadSavedDate() {
-            try {
-                const savedVal = localStorage.getItem(STORAGE_KEY);
-                if (savedVal) {
-                    dateInput.value = savedVal;
-                    lastPeriodStart = parseDateInput(savedVal);
-                }
-            } catch (err) {
-                console.error("Storage non accessibile", err);
-            }
-            calculateCycle();
-        }
-
-        function saveDate() {
-            const value = dateInput.value;
-            if (!value) return;
-            try {
-                localStorage.setItem(STORAGE_KEY, value);
-                lastPeriodStart = parseDateInput(value);
-                saveMsg.textContent = 'Data salvata.';
-                setTimeout(() => { saveMsg.textContent = ''; }, 2500);
-                calculateCycle();
-            } catch (err) {
-                saveMsg.textContent = 'Errore nel salvataggio, riprova.';
-            }
-        }
-
-        saveBtn.addEventListener('click', saveDate);
 
         function updateTotalsAndRules() {
             let kcal = 0;
@@ -911,11 +864,166 @@
             });
         });
 
-        loadSavedDate();
         updateTotalsAndRules();
+
+        // ---- LOGICA CICLO ORMONALE ----
+        const dateInput = document.getElementById('last-period-input');
+        const saveBtn = document.getElementById('save-period-btn');
+        const saveMsg = document.getElementById('cycle-save-msg');
+        let lastPeriodStart = null;
+
+        function parseDateInput(value) {
+            const [y, m, d] = value.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function toDateOnly(d) {
+            const copy = new Date(d);
+            copy.setHours(0, 0, 0, 0);
+            return copy;
+        }
+
+        function calculateCycle() {
+            const badge = document.getElementById('cycle-days-left');
+            const advice = document.getElementById('cycle-advice');
+            document.querySelectorAll('.phase-box').forEach(el => el.classList.remove('active'));
+
+            if (!lastPeriodStart) {
+                badge.textContent = 'Inserisci una data';
+                advice.textContent = "Inserisci la data di inizio dell'ultimo ciclo per attivare il monitoraggio.";
+                return;
+            }
+
+            const today = toDateOnly(new Date());
+            const start = toDateOnly(lastPeriodStart);
+            const daysSinceStart = Math.round((today - start) / (1000 * 60 * 60 * 24));
+
+            if (daysSinceStart < 0) {
+                badge.textContent = 'Data non valida';
+                advice.textContent = "La data inserita è nel futuro.";
+                return;
+            }
+
+            if (daysSinceStart < CYCLE_LENGTH) {
+                const cycleDay = daysSinceStart + 1;
+                const daysLeft = CYCLE_LENGTH - daysSinceStart;
+                badge.textContent = `-${daysLeft} gg al ciclo (giorno ${cycleDay})`;
+
+                if (cycleDay <= 5) {
+                    document.getElementById('phase-m').classList.add('active');
+                    advice.textContent = "Fase Mestruale: Calo energetico e possibile ritenzione. Mantieni un buon apporto idrico.";
+                } else if (cycleDay <= 13) {
+                    document.getElementById('phase-f').classList.add('active');
+                    advice.textContent = "Fase Follicolare: Energia e sensibilità insulinica ottimali.";
+                } else if (cycleDay <= 16) {
+                    document.getElementById('phase-o').classList.add('active');
+                    advice.textContent = "Fase Ovulatoria: Picco ormonale ed energetico.";
+                } else {
+                    document.getElementById('phase-l').classList.add('active');
+                    advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
+                }
+            } else {
+                const delayDays = daysSinceStart - CYCLE_LENGTH + 1;
+                badge.textContent = `Ciclo in ritardo di ${delayDays} gg`;
+                document.getElementById('phase-l').classList.add('active');
+                advice.textContent = "Ciclo in ritardo rispetto ai 28 giorni standard.";
+            }
+        }
+
+        function loadSavedDate() {
+            try {
+                const savedVal = localStorage.getItem(STORAGE_KEY);
+                if (savedVal) {
+                    dateInput.value = savedVal;
+                    lastPeriodStart = parseDateInput(savedVal);
+                }
+            } catch (err) { }
+            calculateCycle();
+        }
+
+        saveBtn.addEventListener('click', () => {
+            const value = dateInput.value;
+            if (!value) return;
+            try {
+                localStorage.setItem(STORAGE_KEY, value);
+                lastPeriodStart = parseDateInput(value);
+                saveMsg.textContent = 'Data salvata.';
+                setTimeout(() => { saveMsg.textContent = ''; }, 2500);
+                calculateCycle();
+            } catch (err) {
+                saveMsg.textContent = 'Errore nel salvataggio, riprova.';
+            }
+        });
+
+        loadSavedDate();
+
+        // ---- INIZIALIZZAZIONE WHEEL PICKER (PESO) ----
+        const picker = document.getElementById('weight-picker');
+        const startWeight = 50.0;
+        const endWeight = 55.0;
+
+        for (let w = startWeight; w <= endWeight + 0.05; w += 0.1) {
+            const item = document.createElement('div');
+            item.className = 'picker-item';
+            item.textContent = w.toFixed(1) + ' kg';
+            picker.appendChild(item);
+        }
+
+        picker.scrollTop = 20 * 40; // Default 52.0 kg
+        handlePickerScroll();
     });
 
-    // FUNZIONE PER COSTRUIRE ED EVOCARE LA STAMPA SINTETICA
+    // ---- FUNZIONI DIARIO SINTOMI (Nuove) ----
+
+    function selectEvacuazione(val, btn) {
+        selectOption(btn);
+        const bristolSection = document.getElementById('bristol-section');
+        if (val === 'Sì') {
+            bristolSection.style.display = 'block';
+        } else {
+            bristolSection.style.display = 'none';
+            document.getElementById('bristol-desc').style.display = 'none';
+        }
+    }
+
+    function selectBristol(val, desc, btn) {
+        selectOption(btn);
+        const descEl = document.getElementById('bristol-desc');
+        descEl.textContent = desc;
+        descEl.style.display = 'block';
+    }
+
+    function selectGonfiore(val, desc, btn) {
+        selectOption(btn);
+        const descEl = document.getElementById('gonfiore-desc');
+        descEl.textContent = desc;
+        descEl.style.display = 'block';
+    }
+
+    function selectOption(btn) {
+        const parent = btn.parentElement;
+        const buttons = parent.querySelectorAll('.btn-option');
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function handlePickerScroll() {
+        const picker = document.getElementById('weight-picker');
+        const items = picker.querySelectorAll('.picker-item');
+        const scrollTop = picker.scrollTop;
+        const itemHeight = 40;
+        const selectedIndex = Math.round(scrollTop / itemHeight);
+
+        items.forEach((item, index) => {
+            if (index === selectedIndex) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    }
+
+    // ---- FUNZIONE STAMPA PDF SINTETICA ----
     function generaStampaSintetica() {
         const dateStr = new Date().toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const totKcal = document.getElementById('total-kcal').textContent;
@@ -934,9 +1042,10 @@
             });
         }
 
-        function getRadioValue(name) {
-            const checked = document.querySelector(`input[name="${name}"]:checked`);
-            return checked ? checked.value : 'Non registrato';
+        // Funzione per prendere il valore del bottone attivo di un determinato gruppo
+        function getActiveButtonValue(groupName) {
+            const activeBtn = document.querySelector(`.button-group[data-group="${groupName}"] .btn-option.active`);
+            return activeBtn ? activeBtn.textContent.trim() : 'Non registrato';
         }
 
         let html = `
@@ -961,19 +1070,25 @@
         addSection('Budget Flessibile', getCheckedLabels('sec-budget'));
 
         const notes = document.getElementById('diary-notes').value.trim();
+        const evacValue = getActiveButtonValue('evacuazione');
+        const bristolValue = evacValue === 'Sì' ? getActiveButtonValue('bristol') : 'N/A (Evacuazione: No)';
+        const selectedWeight = document.querySelector('.picker-item.selected')?.textContent || 'Non registrato';
 
         html += `
             <h2>Diario Sintomi</h2>
             <ul>
-                <li>• <strong>Evacuazione:</strong> ${getRadioValue('evacuazione')}</li>
-                <li>• <strong>Scala Bristol:</strong> ${getRadioValue('bristol')}</li>
-                <li>• <strong>Gonfiore Addominale:</strong> ${getRadioValue('gonfiore')}</li>
-                <li>• <strong>Acqua Bevuta:</strong> ${getRadioValue('acqua')}</li>
+                <li>• <strong>Evacuazione:</strong> ${evacValue}</li>
+                <li>• <strong>Scala Bristol:</strong> ${bristolValue}</li>
+                <li>• <strong>Gonfiore Addominale:</strong> ${getActiveButtonValue('gonfiore')}</li>
+                <li>• <strong>Allenamento:</strong> ${getActiveButtonValue('allenamento')}</li>
+                <li>• <strong>Qualità del Sonno:</strong> ${getActiveButtonValue('sonno')}</li>
+                <li>• <strong>Acqua Bevuta:</strong> ${getActiveButtonValue('acqua')}</li>
+                <li>• <strong>Peso del Mattino:</strong> ${selectedWeight}</li>
             </ul>
         `;
 
         if (notes) {
-            html += `<h2>Note / Peso del mattino</h2><div class="notes-box">${notes}</div>`;
+            html += `<h2>Note Aggiuntive</h2><div class="notes-box">${notes}</div>`;
         }
 
         document.getElementById('print-summary').innerHTML = html;
