@@ -310,7 +310,7 @@
             font-weight: 600;
         }
 
-        .bristol-legend, .gonfiore-legend {
+        .bristol-legend {
             background: #f1f3f5;
             border-radius: 8px;
             padding: 10px;
@@ -376,34 +376,82 @@
             background-color: #1a252f;
         }
 
-        /* Print Style rules for PDF Generation */
+        /* CONTAINER DEL RESOCONTO SINTETICO STAMPA */
+        .print-summary-container {
+            display: none;
+        }
+
+        /* REGOLA DI STAMPA PER CREARE IL PDF SINTETICO DI 1 PAGINA */
         @media print {
             body {
-                background-color: white;
-                padding: 0;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
-            .summary-bar {
-                position: relative;
-                top: 0;
-                box-shadow: none;
-                border: 1px solid #ccc;
-                color: black;
-                background: #f8f9fa;
-            }
-
-            .summary-value {
-                color: #27ae60;
-            }
-
-            .action-bar {
+            .container, .action-bar {
                 display: none !important;
             }
 
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                page-break-inside: avoid;
+            .print-summary-container {
+                display: block !important;
+                font-family: sans-serif;
+                padding: 15px;
+                color: #000;
+            }
+
+            .print-summary-container h1 {
+                font-size: 1.2rem;
+                margin: 0 0 2px 0;
+                color: #2c3e50;
+                border-bottom: 2px solid #2c3e50;
+                padding-bottom: 4px;
+            }
+
+            .print-summary-container .pdate {
+                font-size: 0.8rem;
+                color: #666;
+                margin-bottom: 12px;
+            }
+
+            .print-summary-container .summary-box {
+                background: #f1f3f5;
+                border: 1px solid #ccc;
+                padding: 8px 12px;
+                border-radius: 6px;
+                margin-bottom: 12px;
+                font-size: 0.88rem;
+            }
+
+            .print-summary-container h2 {
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin: 10px 0 4px 0;
+                color: #2c3e50;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 2px;
+            }
+
+            .print-summary-container ul {
+                list-style: none;
+                padding: 0;
+                margin: 0 0 6px 0;
+            }
+
+            .print-summary-container li {
+                font-size: 0.85rem;
+                padding: 1px 0;
+            }
+
+            .print-summary-container .notes-box {
+                font-size: 0.85rem;
+                font-style: italic;
+                background: #fafafa;
+                border: 1px dashed #ccc;
+                padding: 6px;
+                border-radius: 4px;
+                margin-top: 4px;
             }
         }
     </style>
@@ -448,7 +496,7 @@
         <div class="cycle-note" id="cycle-advice">Inserisci la data di inizio dell'ultimo ciclo per attivare il monitoraggio.</div>
     </div>
 
-    <div class="card">
+    <div class="card" id="sec-colazione">
         <div class="card-header">
             <span class="card-title">06:00 Colazione</span>
             <span class="card-meta">~320-350 kcal | ~18-24g prot</span>
@@ -474,7 +522,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="sec-mattina">
         <div class="card-header">
             <span class="card-title">10:30–11:00 Metà Mattina</span>
             <span class="card-meta">~116 kcal | ~3g prot</span>
@@ -487,7 +535,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="sec-pranzo">
         <div class="card-header">
             <span class="card-title">13:00 Pranzo</span>
             <span class="card-meta">~400-430 kcal | ~26-30g prot</span>
@@ -508,363 +556,4 @@
             </label>
             <label class="check-item">
                 <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
-                <span>60-70g Pasta/Riso + 100-120g Pollo / Tacchino</span>
-            </label>
-        </div>
-
-        <div class="section-subtitle">Contorno e Condimento Pranzo</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="30" data-prot="1">
-                <span>100–150g Verdura</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="45" data-prot="0">
-                <span>5g Olio EVO</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="90" data-prot="0">
-                <span>10g Olio EVO</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">16:00–16:30 Merenda</span>
-            <span class="card-meta">~150-175 kcal | ~2-3g prot</span>
-        </div>
-        <div class="section-subtitle">Componi il pasto</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="80" data-prot="1" name="merenda-frutta">
-                <span>150g Mirtilli</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="100" data-prot="1" name="merenda-frutta">
-                <span>150g Banana</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="65" data-prot="1" id="check-noci">
-                <span>10g Noci</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">20:00 Cena</span>
-            <span class="card-meta">~480-520 kcal | ~33g prot</span>
-        </div>
-
-        <div class="section-subtitle">Proteine — scegli 1 opzione</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="130" data-prot="28" data-fat="magra" name="cena-prot">
-                <span>120g Pollo / Tacchino</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="120" data-prot="28" data-fat="magra" name="cena-prot">
-                <span>120g Tonno al naturale sgocciolato</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="110" data-prot="26" data-fat="magra" name="cena-prot">
-                <span>150g Nasello</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="160" data-prot="31" data-fat="media" name="cena-prot">
-                <span>150g Orata / Spigola</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="180" data-prot="28" data-fat="media" name="cena-prot">
-                <span>130g Macinato magro</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="160" data-prot="25" data-fat="media" name="cena-prot">
-                <span>180-200g Tofu al naturale</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="210" data-prot="29" data-fat="media" name="cena-prot">
-                <span>2 Uova + 150g Albume</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="300" data-prot="29" data-fat="grassa" name="cena-prot">
-                <span>100g Mozzarella + 100g Albume <span class="badge-max">(max 1×/settimana)</span></span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="200" data-prot="29" data-fat="grassa" name="cena-prot">
-                <span>40g Grana / Parmigiano + 150g Albume <span class="badge-max">(max 1×/settimana)</span></span>
-            </label>
-        </div>
-
-        <div class="section-subtitle">Carboidrati — scegli 1 opzione</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="270" data-prot="8" name="cena-carb">
-                <span>70-80g Pasta / Riso / Grano Saraceno</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="210" data-prot="6" name="cena-carb">
-                <span>80g Pane</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="220" data-prot="5" name="cena-carb">
-                <span>250-300g Patate</span>
-            </label>
-        </div>
-
-        <div class="section-subtitle">Contorno e Condimento Cena</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="40" data-prot="2">
-                <span>200g Verdura cotta</span>
-            </label>
-            <label class="check-item" id="item-olio-5">
-                <input type="checkbox" data-kcal="45" data-prot="0" id="check-olio-5" name="cena-olio">
-                <span>5g Olio EVO</span>
-            </label>
-            <label class="check-item" id="item-olio-10">
-                <input type="checkbox" data-kcal="90" data-prot="0" id="check-olio-10" name="cena-olio">
-                <span>10g Olio EVO</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">Budget Flessibile Settimanale</span>
-            <span class="card-meta">~600-650 kcal totali / sett</span>
-        </div>
-        <div class="checkbox-group">
-            <label class="check-item"><input type="checkbox" data-kcal="100" data-prot="0"><span>Bicchiere di vino</span></label>
-            <label class="check-item"><input type="checkbox" data-kcal="280" data-prot="3"><span>Brioche / dolce / barretta / snack</span></label>
-            <label class="check-item"><input type="checkbox" data-kcal="250" data-prot="2"><span>Aperitivo</span></label>
-            <label class="check-item"><input type="checkbox" data-kcal="500" data-prot="20"><span>Pasto al ristorante</span></label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">Diario Sintomi (Fine Giornata)</span>
-        </div>
-
-        <div class="section-subtitle">Evacuazione</div>
-        <div class="radio-grid radio-grid-2">
-            <div class="radio-btn btn-good"><input type="radio" id="eva-si" name="evacuazione"><label for="eva-si">Sì</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="eva-no" name="evacuazione"><label for="eva-no">No</label></div>
-        </div>
-
-        <div class="section-subtitle">Scala Bristol (Tipo 1–7)</div>
-        <div class="radio-grid">
-            <div class="radio-btn btn-alert"><input type="radio" id="b1" name="bristol"><label for="b1">T1</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="b2" name="bristol"><label for="b2">T2</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="b3" name="bristol"><label for="b3">T3</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="b4" name="bristol"><label for="b4">T4</label></div>
-            <div class="radio-btn btn-warn"><input type="radio" id="b5" name="bristol"><label for="b5">T5</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="b6" name="bristol"><label for="b6">T6</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="b7" name="bristol"><label for="b7">T7</label></div>
-        </div>
-        <div class="bristol-legend">
-            <div><strong>T1:</strong> Palline dure e separate</div>
-            <div><strong>T2:</strong> A forma di salsiccia ma con grumi</div>
-            <div><strong>T3:</strong> Come una salsiccia con crepe in superficie</div>
-            <div><strong>T4:</strong> Salsiccia liscia e morbida</div>
-            <div><strong>T5:</strong> Pezzi morbidi con bordi ben definiti</div>
-            <div><strong>T6:</strong> Pezzi sfilacciati, consistenza poltacea</div>
-            <div><strong>T7:</strong> Acquosa, nessun pezzo solido</div>
-        </div>
-
-        <div class="section-subtitle">Gonfiore Addominale</div>
-        <div class="radio-grid radio-grid-5">
-            <div class="radio-btn btn-good"><input type="radio" id="g1" name="gonfiore"><label for="g1">0–1</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="g2" name="gonfiore"><label for="g2">2–3</label></div>
-            <div class="radio-btn btn-warn"><input type="radio" id="g3" name="gonfiore"><label for="g3">4–5</label></div>
-            <div class="radio-btn btn-warn"><input type="radio" id="g4" name="gonfiore"><label for="g4">6–7</label></div>
-            <div class="radio-btn btn-alert"><input type="radio" id="g5" name="gonfiore"><label for="g5">8–10</label></div>
-        </div>
-
-        <div class="section-subtitle">Acqua Bevuta</div>
-        <div class="radio-grid radio-grid-3">
-            <div class="radio-btn btn-alert"><input type="radio" id="a1" name="acqua"><label for="a1">&lt; 1.8 L</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="a2" name="acqua"><label for="a2">1.8 L</label></div>
-            <div class="radio-btn btn-good"><input type="radio" id="a3" name="acqua"><label for="a3">≥ 2.0 L</label></div>
-        </div>
-
-        <div class="section-subtitle">Note / Peso del mattino</div>
-        <textarea placeholder="Inserisci note su peso, energia o altri sintomi..."></textarea>
-    </div>
-
-</div>
-
-<div class="action-bar">
-    <button class="btn-pdf" onclick="window.print()">
-        📄 Salva Diario in PDF
-    </button>
-</div>
-
-<script>
-    const CYCLE_LENGTH = 28;
-    const STORAGE_KEY = 'last-period-start-date';
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        const totalKcalEl = document.getElementById('total-kcal');
-        const totalProtEl = document.getElementById('total-prot');
-
-        const checkNoci = document.getElementById('check-noci');
-        const checkOlio5 = document.getElementById('check-olio-5');
-        const checkOlio10 = document.getElementById('check-olio-10');
-        const itemOlio5 = document.getElementById('item-olio-5');
-        const itemOlio10 = document.getElementById('item-olio-10');
-
-        const dateInput = document.getElementById('last-period-input');
-        const saveBtn = document.getElementById('save-period-btn');
-        const saveMsg = document.getElementById('cycle-save-msg');
-
-        let lastPeriodStart = null;
-
-        function parseDateInput(value) {
-            const [y, m, d] = value.split('-').map(Number);
-            return new Date(y, m - 1, d);
-        }
-
-        function toDateOnly(d) {
-            const copy = new Date(d);
-            copy.setHours(0, 0, 0, 0);
-            return copy;
-        }
-
-        function calculateCycle() {
-            const badge = document.getElementById('cycle-days-left');
-            const advice = document.getElementById('cycle-advice');
-
-            document.querySelectorAll('.phase-box').forEach(el => el.classList.remove('active'));
-
-            if (!lastPeriodStart) {
-                badge.textContent = 'Inserisci una data';
-                advice.textContent = "Inserisci la data di inizio dell'ultimo ciclo per attivare il monitoraggio.";
-                return;
-            }
-
-            const today = toDateOnly(new Date());
-            const start = toDateOnly(lastPeriodStart);
-            const daysSinceStart = Math.round((today - start) / (1000 * 60 * 60 * 24));
-
-            if (daysSinceStart < 0) {
-                badge.textContent = 'Data non valida';
-                advice.textContent = "La data inserita è nel futuro: controlla il giorno di inizio ciclo.";
-                return;
-            }
-
-            if (daysSinceStart < CYCLE_LENGTH) {
-                const cycleDay = daysSinceStart + 1;
-                const daysLeft = CYCLE_LENGTH - daysSinceStart;
-                badge.textContent = `-${daysLeft} gg al ciclo (giorno ${cycleDay})`;
-
-                if (cycleDay <= 5) {
-                    document.getElementById('phase-m').classList.add('active');
-                    advice.textContent = "Fase Mestruale: Calo energetico e possibile ritenzione. Mantieni un buon apporto idrico.";
-                } else if (cycleDay <= 13) {
-                    document.getElementById('phase-f').classList.add('active');
-                    advice.textContent = "Fase Follicolare: Energia e sensibilità insulinica ottimali.";
-                } else if (cycleDay <= 16) {
-                    document.getElementById('phase-o').classList.add('active');
-                    advice.textContent = "Fase Ovulatoria: Picco ormonale ed energetico.";
-                } else {
-                    document.getElementById('phase-l').classList.add('active');
-                    advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
-                }
-            } else {
-                const delayDays = daysSinceStart - CYCLE_LENGTH + 1;
-                badge.textContent = `Ciclo in ritardo di ${delayDays} gg`;
-                document.getElementById('phase-l').classList.add('active');
-                advice.textContent = "Ciclo in ritardo rispetto ai 28 giorni standard. Aggiorna la data non appena inizia il nuovo ciclo.";
-            }
-        }
-
-        function loadSavedDate() {
-            try {
-                const savedVal = localStorage.getItem(STORAGE_KEY);
-                if (savedVal) {
-                    dateInput.value = savedVal;
-                    lastPeriodStart = parseDateInput(savedVal);
-                }
-            } catch (err) {
-                console.error("Storage non accessibile", err);
-            }
-            calculateCycle();
-        }
-
-        function saveDate() {
-            const value = dateInput.value;
-            if (!value) return;
-            try {
-                localStorage.setItem(STORAGE_KEY, value);
-                lastPeriodStart = parseDateInput(value);
-                saveMsg.textContent = 'Data salvata.';
-                setTimeout(() => { saveMsg.textContent = ''; }, 2500);
-                calculateCycle();
-            } catch (err) {
-                saveMsg.textContent = 'Errore nel salvataggio, riprova.';
-            }
-        }
-
-        saveBtn.addEventListener('click', saveDate);
-
-        function updateTotalsAndRules() {
-            let kcal = 0;
-            let prot = 0;
-
-            const selectedCenaProt = document.querySelector('input[name="cena-prot"]:checked');
-            const fatType = selectedCenaProt ? selectedCenaProt.dataset.fat : null;
-            const hasNoci = checkNoci.checked;
-
-            if (fatType === 'grassa') {
-                itemOlio5.classList.add('disabled');
-                itemOlio10.classList.add('disabled');
-                checkOlio5.checked = false;
-                checkOlio10.checked = false;
-                checkOlio5.disabled = true;
-                checkOlio10.disabled = true;
-            } else if (fatType === 'media' || hasNoci) {
-                itemOlio5.classList.remove('disabled');
-                itemOlio10.classList.add('disabled');
-                checkOlio10.checked = false;
-                checkOlio5.disabled = false;
-                checkOlio10.disabled = true;
-            } else {
-                itemOlio5.classList.remove('disabled');
-                itemOlio10.classList.remove('disabled');
-                checkOlio5.disabled = false;
-                checkOlio10.disabled = false;
-            }
-
-            checkboxes.forEach(cb => {
-                if (cb.checked) {
-                    kcal += parseInt(cb.dataset.kcal || 0, 10);
-                    prot += parseInt(cb.dataset.prot || 0, 10);
-                }
-            });
-
-            totalKcalEl.textContent = kcal;
-            totalProtEl.textContent = prot + ' g';
-        }
-
-        checkboxes.forEach(cb => {
-            cb.addEventListener('change', (e) => {
-                if (e.target.name && e.target.checked) {
-                    document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(other => {
-                        if (other !== e.target) other.checked = false;
-                    });
-                }
-                updateTotalsAndRules();
-            });
-        });
-
-        loadSavedDate();
-        updateTotalsAndRules();
-    });
-</script>
-
-</body>
-</html>
+                <span>60-70g Pasta/Riso + 100-1
