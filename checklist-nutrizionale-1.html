@@ -201,6 +201,51 @@
             margin-top: 6px;
         }
 
+        .cycle-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .cycle-input-row label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .cycle-input-row input[type="date"] {
+            flex: 1;
+            min-width: 140px;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .btn-save-period {
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-save-period:hover {
+            opacity: 0.9;
+        }
+
+        .cycle-save-msg {
+            font-size: 0.75rem;
+            color: var(--accent);
+            min-height: 14px;
+            margin-bottom: 8px;
+        }
+
         /* Radio Buttons Grid & Colors */
         .radio-grid {
             display: grid;
@@ -208,6 +253,10 @@
             gap: 6px;
             margin-top: 6px;
         }
+
+        .radio-grid-2 { grid-template-columns: 1fr 1fr; }
+        .radio-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .radio-grid-5 { grid-template-columns: repeat(5, 1fr); }
 
         .radio-btn {
             position: relative;
@@ -382,15 +431,21 @@
     <div class="card cycle-card">
         <div class="cycle-status">
             <span>Stato Ciclo Ormonale</span>
-            <span class="cycle-days-badge" id="cycle-days-left">Calcolo in corso...</span>
+            <span class="cycle-days-badge" id="cycle-days-left">Inserisci una data</span>
         </div>
+        <div class="cycle-input-row">
+            <label for="last-period-input">Data inizio ultimo ciclo:</label>
+            <input type="date" id="last-period-input">
+            <button class="btn-save-period" id="save-period-btn" type="button">Salva</button>
+        </div>
+        <div class="cycle-save-msg" id="cycle-save-msg"></div>
         <div class="cycle-phases">
             <div class="phase-box" id="phase-m">Mestruale<br><small>G1-5</small></div>
             <div class="phase-box" id="phase-f">Follicolare<br><small>G6-13</small></div>
             <div class="phase-box" id="phase-o">Ovulazione<br><small>G14-16</small></div>
             <div class="phase-box" id="phase-l">Luteale<br><small>G17-28</small></div>
         </div>
-        <div class="cycle-note" id="cycle-advice">Caricamento suggerimenti per la fase attuale...</div>
+        <div class="cycle-note" id="cycle-advice">Inserisci la data di inizio dell'ultimo ciclo per attivare il monitoraggio.</div>
     </div>
 
     <div class="card">
@@ -501,7 +556,7 @@
             <span class="card-title">20:00 Cena</span>
             <span class="card-meta">~480-520 kcal | ~33g prot</span>
         </div>
-        
+
         <div class="section-subtitle">Proteine — scegli 1 opzione</div>
         <div class="checkbox-group">
             <label class="check-item">
@@ -594,7 +649,7 @@
         </div>
 
         <div class="section-subtitle">Evacuazione</div>
-        <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="radio-grid radio-grid-2">
             <div class="radio-btn btn-good"><input type="radio" id="eva-si" name="evacuazione"><label for="eva-si">Sì</label></div>
             <div class="radio-btn btn-alert"><input type="radio" id="eva-no" name="evacuazione"><label for="eva-no">No</label></div>
         </div>
@@ -620,7 +675,7 @@
         </div>
 
         <div class="section-subtitle">Gonfiore Addominale</div>
-        <div class="radio-grid" style="grid-template-columns: repeat(5, 1fr);">
+        <div class="radio-grid radio-grid-5">
             <div class="radio-btn btn-good"><input type="radio" id="g1" name="gonfiore"><label for="g1">0–1</label></div>
             <div class="radio-btn btn-good"><input type="radio" id="g2" name="gonfiore"><label for="g2">2–3</label></div>
             <div class="radio-btn btn-warn"><input type="radio" id="g3" name="gonfiore"><label for="g3">4–5</label></div>
@@ -629,7 +684,7 @@
         </div>
 
         <div class="section-subtitle">Acqua Bevuta</div>
-        <div class="radio-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="radio-grid radio-grid-3">
             <div class="radio-btn btn-alert"><input type="radio" id="a1" name="acqua"><label for="a1">&lt; 1.8 L</label></div>
             <div class="radio-btn btn-good"><input type="radio" id="a2" name="acqua"><label for="a2">1.8 L</label></div>
             <div class="radio-btn btn-good"><input type="radio" id="a3" name="acqua"><label for="a3">≥ 2.0 L</label></div>
@@ -648,9 +703,8 @@
 </div>
 
 <script>
-    // DATA PROSSIMO CICLO PREVISTO (Anno, Mese 0-indexed, Giorno)
-    // 8 equivale a Settembre
-    const NEXT_PERIOD = new Date(2026, 8, 14); 
+    const CYCLE_LENGTH = 28;
+    const STORAGE_KEY = 'last-period-start-date';
 
     document.addEventListener('DOMContentLoaded', () => {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -663,44 +717,107 @@
         const itemOlio5 = document.getElementById('item-olio-5');
         const itemOlio10 = document.getElementById('item-olio-10');
 
-        // 1. Logica Calcolo Ciclo
+        const dateInput = document.getElementById('last-period-input');
+        const saveBtn = document.getElementById('save-period-btn');
+        const saveMsg = document.getElementById('cycle-save-msg');
+
+        let lastPeriodStart = null;
+
+        // Costruisce una Date locale da una stringa "YYYY-MM-DD" evitando
+        // problemi di fuso orario che avrebbe `new Date(stringa)`.
+        function parseDateInput(value) {
+            const [y, m, d] = value.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function toDateOnly(d) {
+            const copy = new Date(d);
+            copy.setHours(0, 0, 0, 0);
+            return copy;
+        }
+
+        // 1. Logica Calcolo Ciclo, basata sulla data reale di inizio ultimo ciclo.
+        // Usare oggetti Date invece di un numero fisso di giorni fa sì che mesi
+        // da 28, 29, 30 o 31 giorni vengano gestiti automaticamente e senza errori.
         function calculateCycle() {
-            const today = new Date();
-            
-            // Calcolo giorni rimanenti
-            const diffTime = NEXT_PERIOD - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
             const badge = document.getElementById('cycle-days-left');
             const advice = document.getElementById('cycle-advice');
-            
-            // Reset fasi
+
             document.querySelectorAll('.phase-box').forEach(el => el.classList.remove('active'));
 
-            if (diffDays > 0) {
-                badge.textContent = `-${diffDays} gg al ciclo`;
-            } else {
-                badge.textContent = `Ciclo Iniziato / Previsto`;
+            if (!lastPeriodStart) {
+                badge.textContent = 'Inserisci una data';
+                advice.textContent = "Inserisci la data di inizio dell'ultimo ciclo per attivare il monitoraggio.";
+                return;
             }
 
-            // Stima del giorno del ciclo (su ciclo standard di 28 giorni)
-            let cycleDay = 28 - diffDays + 1;
-            if (cycleDay <= 0) cycleDay = 1;
+            const today = toDateOnly(new Date());
+            const start = toDateOnly(lastPeriodStart);
+            const daysSinceStart = Math.round((today - start) / (1000 * 60 * 60 * 24));
 
-            if (cycleDay <= 5) {
-                document.getElementById('phase-m').classList.add('active');
-                advice.textContent = "Fase Mestruale: Calo energetico e possibile ritenzione. Mantieni un buon apporto idrico.";
-            } else if (cycleDay <= 13) {
-                document.getElementById('phase-f').classList.add('active');
-                advice.textContent = "Fase Follicolare: Energia e sensibilità insulinica ottimali.";
-            } else if (cycleDay <= 16) {
-                document.getElementById('phase-o').classList.add('active');
-                advice.textContent = "Fase Ovulatoria: Picco ormonale ed energetico.";
+            if (daysSinceStart < 0) {
+                badge.textContent = 'Data non valida';
+                advice.textContent = "La data inserita è nel futuro: controlla il giorno di inizio ciclo.";
+                return;
+            }
+
+            if (daysSinceStart < CYCLE_LENGTH) {
+                const cycleDay = daysSinceStart + 1;
+                const daysLeft = CYCLE_LENGTH - daysSinceStart;
+                badge.textContent = `-${daysLeft} gg al ciclo (giorno ${cycleDay})`;
+
+                if (cycleDay <= 5) {
+                    document.getElementById('phase-m').classList.add('active');
+                    advice.textContent = "Fase Mestruale: Calo energetico e possibile ritenzione. Mantieni un buon apporto idrico.";
+                } else if (cycleDay <= 13) {
+                    document.getElementById('phase-f').classList.add('active');
+                    advice.textContent = "Fase Follicolare: Energia e sensibilità insulinica ottimali.";
+                } else if (cycleDay <= 16) {
+                    document.getElementById('phase-o').classList.add('active');
+                    advice.textContent = "Fase Ovulatoria: Picco ormonale ed energetico.";
+                } else {
+                    document.getElementById('phase-l').classList.add('active');
+                    advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
+                }
             } else {
+                // Ciclo in ritardo rispetto ai 28 giorni: non si inventa un nuovo
+                // ciclo partito puntuale, si resta in stato di attesa finché
+                // l'utente non aggiorna la data con l'inizio effettivo.
+                const delayDays = daysSinceStart - CYCLE_LENGTH + 1;
+                badge.textContent = `Ciclo in ritardo di ${delayDays} gg`;
                 document.getElementById('phase-l').classList.add('active');
-                advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
+                advice.textContent = "Ciclo in ritardo rispetto ai 28 giorni standard. Aggiorna la data non appena inizia il nuovo ciclo.";
             }
         }
+
+        async function loadSavedDate() {
+            try {
+                const result = await window.storage.get(STORAGE_KEY, false);
+                if (result && result.value) {
+                    dateInput.value = result.value;
+                    lastPeriodStart = parseDateInput(result.value);
+                }
+            } catch (err) {
+                // Nessuna data salvata ancora: si resta in stato "Inserisci una data".
+            }
+            calculateCycle();
+        }
+
+        async function saveDate() {
+            const value = dateInput.value;
+            if (!value) return;
+            try {
+                await window.storage.set(STORAGE_KEY, value, false);
+                lastPeriodStart = parseDateInput(value);
+                saveMsg.textContent = 'Data salvata.';
+                setTimeout(() => { saveMsg.textContent = ''; }, 2500);
+                calculateCycle();
+            } catch (err) {
+                saveMsg.textContent = 'Errore nel salvataggio, riprova.';
+            }
+        }
+
+        saveBtn.addEventListener('click', saveDate);
 
         // 2. Calcolo Totali Nutrizionali e Regole Olio
         function updateTotalsAndRules() {
@@ -708,27 +825,33 @@
             let prot = 0;
 
             const selectedCenaProt = document.querySelector('input[name="cena-prot"]:checked');
-            let fatType = selectedCenaProt ? selectedCenaProt.dataset.fat : null;
-            let hasNoci = checkNoci.checked;
+            const fatType = selectedCenaProt ? selectedCenaProt.dataset.fat : null;
+            const hasNoci = checkNoci.checked;
 
             if (fatType === 'grassa') {
                 itemOlio5.classList.add('disabled');
                 itemOlio10.classList.add('disabled');
                 checkOlio5.checked = false;
                 checkOlio10.checked = false;
+                checkOlio5.disabled = true;
+                checkOlio10.disabled = true;
             } else if (fatType === 'media' || hasNoci) {
+                itemOlio5.classList.remove('disabled');
                 itemOlio10.classList.add('disabled');
                 checkOlio10.checked = false;
-                itemOlio5.classList.remove('disabled');
+                checkOlio5.disabled = false;
+                checkOlio10.disabled = true;
             } else {
                 itemOlio5.classList.remove('disabled');
                 itemOlio10.classList.remove('disabled');
+                checkOlio5.disabled = false;
+                checkOlio10.disabled = false;
             }
 
             checkboxes.forEach(cb => {
                 if (cb.checked) {
-                    kcal += parseInt(cb.dataset.kcal || 0);
-                    prot += parseInt(cb.dataset.prot || 0);
+                    kcal += parseInt(cb.dataset.kcal || 0, 10);
+                    prot += parseInt(cb.dataset.prot || 0, 10);
                 }
             });
 
@@ -747,7 +870,7 @@
             });
         });
 
-        calculateCycle();
+        loadSavedDate();
         updateTotalsAndRules();
     });
 </script>
