@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Piano Nutrizionale</title>
+    <title>Checklist Piano Nutrizionale & Diario Sintomi</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #27ae60;
+            --pink: #d63384;
             --bg: #f8f9fa;
             --card-bg: #ffffff;
             --border: #e9ecef;
@@ -78,6 +79,7 @@
             opacity: 0.9;
         }
 
+        /* Card Component */
         .card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -147,6 +149,59 @@
             cursor: pointer;
         }
 
+        /* Cycle Component Styling */
+        .cycle-card {
+            border-left: 6px solid var(--pink);
+        }
+
+        .cycle-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .cycle-days-badge {
+            background: #fce4ec;
+            color: var(--pink);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .cycle-phases {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .phase-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 2px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .phase-box.active {
+            background: var(--pink);
+            color: white;
+            border-color: var(--pink);
+            font-weight: bold;
+        }
+
+        .cycle-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        /* Radio Buttons Grid & Colors */
         .radio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
@@ -177,8 +232,7 @@
             transition: all 0.2s;
         }
 
-        /* Colorazione dei pulsanti radio selettivi */
-        /* Verde (Bene) */
+        /* Colorazione Semaforica */
         .radio-btn.btn-good input:checked + label {
             background: #27ae60;
             color: white;
@@ -186,7 +240,6 @@
             font-weight: 600;
         }
 
-        /* Arancione (Quasi bene / Attenzione) */
         .radio-btn.btn-warn input:checked + label {
             background: #e67e22;
             color: white;
@@ -194,7 +247,6 @@
             font-weight: 600;
         }
 
-        /* Rosso (Estremi / Male) */
         .radio-btn.btn-alert input:checked + label {
             background: #e74c3c;
             color: white;
@@ -202,7 +254,6 @@
             font-weight: 600;
         }
 
-        /* Default per radio standard (es. acqua) */
         .radio-btn input:checked + label {
             background: var(--accent);
             color: white;
@@ -276,7 +327,7 @@
             background-color: #1a252f;
         }
 
-        /* Regole CSS Print per Salvare in PDF */
+        /* Print Style rules for PDF Generation */
         @media print {
             body {
                 background-color: white;
@@ -314,7 +365,7 @@
 
     <header>
         <h1>Checklist Piano Nutrizionale</h1>
-        <div class="subtitle">Monitoraggio Giornaliero e Sintomi</div>
+        <div class="subtitle">Monitoraggio Giornaliero, Ciclo e Sintomi</div>
     </header>
 
     <div class="summary-bar">
@@ -326,6 +377,20 @@
             <div class="summary-value" id="total-prot">0 g</div>
             <div class="summary-label">Proteine Totali</div>
         </div>
+    </div>
+
+    <div class="card cycle-card">
+        <div class="cycle-status">
+            <span>Stato Ciclo Ormonale</span>
+            <span class="cycle-days-badge" id="cycle-days-left">Calcolo in corso...</span>
+        </div>
+        <div class="cycle-phases">
+            <div class="phase-box" id="phase-m">Mestruale<br><small>G1-5</small></div>
+            <div class="phase-box" id="phase-f">Follicolare<br><small>G6-13</small></div>
+            <div class="phase-box" id="phase-o">Ovulazione<br><small>G14-16</small></div>
+            <div class="phase-box" id="phase-l">Luteale<br><small>G17-28</small></div>
+        </div>
+        <div class="cycle-note" id="cycle-advice">Caricamento suggerimenti per la fase attuale...</div>
     </div>
 
     <div class="card">
@@ -583,6 +648,10 @@
 </div>
 
 <script>
+    // DATA PROSSIMO CICLO PREVISTO (Anno, Mese 0-indexed, Giorno)
+    // 8 equivale a Settembre
+    const NEXT_PERIOD = new Date(2026, 8, 14); 
+
     document.addEventListener('DOMContentLoaded', () => {
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         const totalKcalEl = document.getElementById('total-kcal');
@@ -594,34 +663,68 @@
         const itemOlio5 = document.getElementById('item-olio-5');
         const itemOlio10 = document.getElementById('item-olio-10');
 
+        // 1. Logica Calcolo Ciclo
+        function calculateCycle() {
+            const today = new Date();
+            
+            // Calcolo giorni rimanenti
+            const diffTime = NEXT_PERIOD - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            const badge = document.getElementById('cycle-days-left');
+            const advice = document.getElementById('cycle-advice');
+            
+            // Reset fasi
+            document.querySelectorAll('.phase-box').forEach(el => el.classList.remove('active'));
+
+            if (diffDays > 0) {
+                badge.textContent = `-${diffDays} gg al ciclo`;
+            } else {
+                badge.textContent = `Ciclo Iniziato / Previsto`;
+            }
+
+            // Stima del giorno del ciclo (su ciclo standard di 28 giorni)
+            let cycleDay = 28 - diffDays + 1;
+            if (cycleDay <= 0) cycleDay = 1;
+
+            if (cycleDay <= 5) {
+                document.getElementById('phase-m').classList.add('active');
+                advice.textContent = "Fase Mestruale: Calo energetico e possibile ritenzione. Mantieni un buon apporto idrico.";
+            } else if (cycleDay <= 13) {
+                document.getElementById('phase-f').classList.add('active');
+                advice.textContent = "Fase Follicolare: Energia e sensibilità insulinica ottimali.";
+            } else if (cycleDay <= 16) {
+                document.getElementById('phase-o').classList.add('active');
+                advice.textContent = "Fase Ovulatoria: Picco ormonale ed energetico.";
+            } else {
+                document.getElementById('phase-l').classList.add('active');
+                advice.textContent = "Fase Luteale (Pre-Mestruale): Fisiologico aumento di gonfiore e ritenzione idrica.";
+            }
+        }
+
+        // 2. Calcolo Totali Nutrizionali e Regole Olio
         function updateTotalsAndRules() {
             let kcal = 0;
             let prot = 0;
 
-            // Valuta Proteina Cena
             const selectedCenaProt = document.querySelector('input[name="cena-prot"]:checked');
             let fatType = selectedCenaProt ? selectedCenaProt.dataset.fat : null;
             let hasNoci = checkNoci.checked;
 
-            // Gestione Dinamica Regola Olio Cena
             if (fatType === 'grassa') {
-                // Mozzarella / Grana -> 0g Olio
                 itemOlio5.classList.add('disabled');
                 itemOlio10.classList.add('disabled');
                 checkOlio5.checked = false;
                 checkOlio10.checked = false;
             } else if (fatType === 'media' || hasNoci) {
-                // Grassi propri o Noci selezionate -> Max 5g Olio
                 itemOlio10.classList.add('disabled');
                 checkOlio10.checked = false;
                 itemOlio5.classList.remove('disabled');
             } else {
-                // Magra senza noci -> Disponibile sia 5g che 10g Olio
                 itemOlio5.classList.remove('disabled');
                 itemOlio10.classList.remove('disabled');
             }
 
-            // Calcolo Totali
             checkboxes.forEach(cb => {
                 if (cb.checked) {
                     kcal += parseInt(cb.dataset.kcal || 0);
@@ -635,7 +738,6 @@
 
         checkboxes.forEach(cb => {
             cb.addEventListener('change', (e) => {
-                // Comportamento scelta singola (Radio-like) per gruppi esclusivi
                 if (e.target.name && e.target.checked) {
                     document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(other => {
                         if (other !== e.target) other.checked = false;
@@ -645,6 +747,7 @@
             });
         });
 
+        calculateCycle();
         updateTotalsAndRules();
     });
 </script>
