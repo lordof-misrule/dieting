@@ -117,13 +117,6 @@
             margin: 12px 0 6px 0;
         }
 
-        .help-text {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-style: italic;
-        }
-
         .checkbox-group {
             display: flex;
             flex-direction: column;
@@ -184,273 +177,22 @@
             transition: all 0.2s;
         }
 
-        .radio-btn input:checked + label {
-            background: var(--accent);
+        /* Colorazione dei pulsanti radio selettivi */
+        /* Verde (Bene) */
+        .radio-btn.btn-good input:checked + label {
+            background: #27ae60;
             color: white;
-            border-color: var(--accent);
+            border-color: #27ae60;
             font-weight: 600;
         }
 
-        .bristol-legend, .gonfiore-legend {
-            background: #f1f3f5;
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 8px;
-            font-size: 0.78rem;
-            color: #495057;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 0.9rem;
-            margin-top: 6px;
-            resize: vertical;
-            min-height: 70px;
-        }
-
-        .badge-max {
-            font-size: 0.75rem;
-            color: #d35400;
-            font-weight: normal;
-        }
-
-        /* Fixed Bottom Action Bar */
-        .action-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border-top: 1px solid var(--border);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 1000;
-        }
-
-        .btn-pdf {
-            background-color: var(--primary);
+        /* Arancione (Quasi bene / Attenzione) */
+        .radio-btn.btn-warn input:checked + label {
+            background: #e67e22;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border-color: #e67e22;
             font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            transition: background 0.2s;
         }
 
-        .btn-pdf:hover {
-            background-color: #1a252f;
-        }
-
-        /* Regole di Stampa per Salvare in PDF */
-        @media print {
-            body {
-                background-color: white;
-                padding: 0;
-            }
-
-            .summary-bar {
-                position: relative;
-                top: 0;
-                box-shadow: none;
-                border: 1px solid #ccc;
-                color: black;
-                background: #f8f9fa;
-            }
-
-            .summary-value {
-                color: #27ae60;
-            }
-
-            .action-bar {
-                display: none !important;
-            }
-
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-                page-break-inside: avoid;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-
-    <header>
-        <h1>Checklist Piano Nutrizionale</h1>
-        <div class="subtitle">Monitoraggio Giornaliero e Sintomi</div>
-    </header>
-
-    <div class="summary-bar">
-        <div class="summary-item">
-            <div class="summary-value" id="total-kcal">0</div>
-            <div class="summary-label">Kcal Selezionate</div>
-        </div>
-        <div class="summary-item">
-            <div class="summary-value" id="total-prot">0 g</div>
-            <div class="summary-label">Proteine Totali</div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">06:00 Colazione</span>
-            <span class="card-meta">~320-350 kcal | ~18-24g prot</span>
-        </div>
-        <div class="section-subtitle">Scegli 1 opzione</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="340" data-prot="20" name="colazione">
-                <span>60g Pane + 2 Uova + Kiwi / Mirtilli / Banana (150g)</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="330" data-prot="22" name="colazione">
-                <span>French Toast: 60g Pane + 1 Uovo + 120-150g Albume + 20g Marmellata</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="330" data-prot="22" name="colazione">
-                <span>Pancake: 50g Farina + 1 Uovo + 120-150g Albume + 20g Marmellata</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="350" data-prot="18" name="colazione">
-                <span>60g Pane + 100g Ricotta di capra + 15-20g Marmellata <span class="badge-max">(max 1×/settimana)</span></span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">10:30–11:00 Metà Mattina</span>
-            <span class="card-meta">~116 kcal | ~3g prot</span>
-        </div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="116" data-prot="3">
-                <span>30g Cracker</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">13:00 Pranzo</span>
-            <span class="card-meta">~400-430 kcal | ~26-30g prot</span>
-        </div>
-        <div class="section-subtitle">Carboidrati & Proteine — scegli 1 opzione</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
-                <span>Panino 80g con 100-120g Tonno al naturale</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
-                <span>Panino 80g con 100-120g Pollo / Tacchino</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
-                <span>60-70g Pasta/Riso + 100-120g Tonno al naturale</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
-                <span>60-70g Pasta/Riso + 100-120g Pollo / Tacchino</span>
-            </label>
-        </div>
-
-        <div class="section-subtitle">Contorno e Condimento Pranzo</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="30" data-prot="1">
-                <span>100–150g Verdura</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="45" data-prot="0">
-                <span>5g Olio EVO</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="90" data-prot="0">
-                <span>10g Olio EVO</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">16:00–16:30 Merenda</span>
-            <span class="card-meta">~150-175 kcal | ~2-3g prot</span>
-        </div>
-        <div class="section-subtitle">Componi il pasto</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="80" data-prot="1" name="merenda-frutta">
-                <span>150g Mirtilli</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="100" data-prot="1" name="merenda-frutta">
-                <span>150g Banana</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="65" data-prot="1" id="check-noci">
-                <span>10g Noci</span>
-            </label>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <span class="card-title">20:00 Cena</span>
-            <span class="card-meta">~480-520 kcal | ~33g prot</span>
-        </div>
-        
-        <div class="section-subtitle">Proteine — scegli 1 opzione</div>
-        <div class="checkbox-group">
-            <label class="check-item">
-                <input type="checkbox" data-kcal="130" data-prot="28" data-fat="magra" name="cena-prot">
-                <span>120g Pollo / Tacchino</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="120" data-prot="28" data-fat="magra" name="cena-prot">
-                <span>120g Tonno al naturale sgocciolato</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="110" data-prot="26" data-fat="magra" name="cena-prot">
-                <span>150g Nasello</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="160" data-prot="31" data-fat="media" name="cena-prot">
-                <span>150g Orata / Spigola</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="180" data-prot="28" data-fat="media" name="cena-prot">
-                <span>130g Macinato magro</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="160" data-prot="25" data-fat="media" name="cena-prot">
-                <span>180-200g Tofu al naturale</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="210" data-prot="29" data-fat="media" name="cena-prot">
-                <span>2 Uova + 150g Albume</span>
-            </label>
-            <label class="check-item">
-                <input type="checkbox" data-kcal="300" data-prot="29" data-fat="grassa" name="cena-prot">
-                <span>100g Mozzarella + 100g Albume <span class="badge-max">(max 1×/settimana)</span></span>
-            </label>
-            <label class="check-item">
-                <input
+        /* Rosso (Estremi / Male) */
+        .radio-btn.btn-alert input:checked + label {
