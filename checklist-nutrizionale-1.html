@@ -196,3 +196,458 @@
 
         /* Rosso (Estremi / Male) */
         .radio-btn.btn-alert input:checked + label {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* Default per radio standard (es. acqua) */
+        .radio-btn input:checked + label {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .bristol-legend, .gonfiore-legend {
+            background: #f1f3f5;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: #495057;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-top: 6px;
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .badge-max {
+            font-size: 0.75rem;
+            color: #d35400;
+            font-weight: normal;
+        }
+
+        /* Fixed Bottom Action Bar */
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        .btn-pdf {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .btn-pdf:hover {
+            background-color: #1a252f;
+        }
+
+        /* Regole CSS Print per Salvare in PDF */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+
+            .summary-bar {
+                position: relative;
+                top: 0;
+                box-shadow: none;
+                border: 1px solid #ccc;
+                color: black;
+                background: #f8f9fa;
+            }
+
+            .summary-value {
+                color: #27ae60;
+            }
+
+            .action-bar {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Checklist Piano Nutrizionale</h1>
+        <div class="subtitle">Monitoraggio Giornaliero e Sintomi</div>
+    </header>
+
+    <div class="summary-bar">
+        <div class="summary-item">
+            <div class="summary-value" id="total-kcal">0</div>
+            <div class="summary-label">Kcal Selezionate</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" id="total-prot">0 g</div>
+            <div class="summary-label">Proteine Totali</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">06:00 Colazione</span>
+            <span class="card-meta">~320-350 kcal | ~18-24g prot</span>
+        </div>
+        <div class="section-subtitle">Scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="340" data-prot="20" name="colazione">
+                <span>60g Pane + 2 Uova + Kiwi / Mirtilli / Banana (150g)</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="330" data-prot="22" name="colazione">
+                <span>French Toast: 60g Pane + 1 Uovo + 120-150g Albume + 20g Marmellata</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="330" data-prot="22" name="colazione">
+                <span>Pancake: 50g Farina + 1 Uovo + 120-150g Albume + 20g Marmellata</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="350" data-prot="18" name="colazione">
+                <span>60g Pane + 100g Ricotta di capra + 15-20g Marmellata <span class="badge-max">(max 1×/settimana)</span></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">10:30–11:00 Metà Mattina</span>
+            <span class="card-meta">~116 kcal | ~3g prot</span>
+        </div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="116" data-prot="3">
+                <span>30g Cracker</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">13:00 Pranzo</span>
+            <span class="card-meta">~400-430 kcal | ~26-30g prot</span>
+        </div>
+        <div class="section-subtitle">Carboidrati & Proteine — scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
+                <span>Panino 80g con 100-120g Tonno al naturale</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
+                <span>Panino 80g con 100-120g Pollo / Tacchino</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
+                <span>60-70g Pasta/Riso + 100-120g Tonno al naturale</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="330" data-prot="28" name="pranzo-main">
+                <span>60-70g Pasta/Riso + 100-120g Pollo / Tacchino</span>
+            </label>
+        </div>
+
+        <div class="section-subtitle">Contorno e Condimento Pranzo</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="30" data-prot="1">
+                <span>100–150g Verdura</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="45" data-prot="0">
+                <span>5g Olio EVO</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="90" data-prot="0">
+                <span>10g Olio EVO</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">16:00–16:30 Merenda</span>
+            <span class="card-meta">~150-175 kcal | ~2-3g prot</span>
+        </div>
+        <div class="section-subtitle">Componi il pasto</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="80" data-prot="1" name="merenda-frutta">
+                <span>150g Mirtilli</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="100" data-prot="1" name="merenda-frutta">
+                <span>150g Banana</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="65" data-prot="1" id="check-noci">
+                <span>10g Noci</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">20:00 Cena</span>
+            <span class="card-meta">~480-520 kcal | ~33g prot</span>
+        </div>
+        
+        <div class="section-subtitle">Proteine — scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="130" data-prot="28" data-fat="magra" name="cena-prot">
+                <span>120g Pollo / Tacchino</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="120" data-prot="28" data-fat="magra" name="cena-prot">
+                <span>120g Tonno al naturale sgocciolato</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="110" data-prot="26" data-fat="magra" name="cena-prot">
+                <span>150g Nasello</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="160" data-prot="31" data-fat="media" name="cena-prot">
+                <span>150g Orata / Spigola</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="180" data-prot="28" data-fat="media" name="cena-prot">
+                <span>130g Macinato magro</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="160" data-prot="25" data-fat="media" name="cena-prot">
+                <span>180-200g Tofu al naturale</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="210" data-prot="29" data-fat="media" name="cena-prot">
+                <span>2 Uova + 150g Albume</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="300" data-prot="29" data-fat="grassa" name="cena-prot">
+                <span>100g Mozzarella + 100g Albume <span class="badge-max">(max 1×/settimana)</span></span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="200" data-prot="29" data-fat="grassa" name="cena-prot">
+                <span>40g Grana / Parmigiano + 150g Albume <span class="badge-max">(max 1×/settimana)</span></span>
+            </label>
+        </div>
+
+        <div class="section-subtitle">Carboidrati — scegli 1 opzione</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="270" data-prot="8" name="cena-carb">
+                <span>70-80g Pasta / Riso / Grano Saraceno</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="210" data-prot="6" name="cena-carb">
+                <span>80g Pane</span>
+            </label>
+            <label class="check-item">
+                <input type="checkbox" data-kcal="220" data-prot="5" name="cena-carb">
+                <span>250-300g Patate</span>
+            </label>
+        </div>
+
+        <div class="section-subtitle">Contorno e Condimento Cena</div>
+        <div class="checkbox-group">
+            <label class="check-item">
+                <input type="checkbox" data-kcal="40" data-prot="2">
+                <span>200g Verdura cotta</span>
+            </label>
+            <label class="check-item" id="item-olio-5">
+                <input type="checkbox" data-kcal="45" data-prot="0" id="check-olio-5" name="cena-olio">
+                <span>5g Olio EVO</span>
+            </label>
+            <label class="check-item" id="item-olio-10">
+                <input type="checkbox" data-kcal="90" data-prot="0" id="check-olio-10" name="cena-olio">
+                <span>10g Olio EVO</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Budget Flessibile Settimanale</span>
+            <span class="card-meta">~600-650 kcal totali / sett</span>
+        </div>
+        <div class="checkbox-group">
+            <label class="check-item"><input type="checkbox" data-kcal="100" data-prot="0"><span>Bicchiere di vino</span></label>
+            <label class="check-item"><input type="checkbox" data-kcal="280" data-prot="3"><span>Brioche / dolce / barretta / snack</span></label>
+            <label class="check-item"><input type="checkbox" data-kcal="250" data-prot="2"><span>Aperitivo</span></label>
+            <label class="check-item"><input type="checkbox" data-kcal="500" data-prot="20"><span>Pasto al ristorante</span></label>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Diario Sintomi (Fine Giornata)</span>
+        </div>
+
+        <div class="section-subtitle">Evacuazione</div>
+        <div class="radio-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="radio-btn btn-good"><input type="radio" id="eva-si" name="evacuazione"><label for="eva-si">Sì</label></div>
+            <div class="radio-btn btn-alert"><input type="radio" id="eva-no" name="evacuazione"><label for="eva-no">No</label></div>
+        </div>
+
+        <div class="section-subtitle">Scala Bristol (Tipo 1–7)</div>
+        <div class="radio-grid">
+            <div class="radio-btn btn-alert"><input type="radio" id="b1" name="bristol"><label for="b1">T1</label></div>
+            <div class="radio-btn btn-alert"><input type="radio" id="b2" name="bristol"><label for="b2">T2</label></div>
+            <div class="radio-btn btn-good"><input type="radio" id="b3" name="bristol"><label for="b3">T3</label></div>
+            <div class="radio-btn btn-good"><input type="radio" id="b4" name="bristol"><label for="b4">T4</label></div>
+            <div class="radio-btn btn-warn"><input type="radio" id="b5" name="bristol"><label for="b5">T5</label></div>
+            <div class="radio-btn btn-alert"><input type="radio" id="b6" name="bristol"><label for="b6">T6</label></div>
+            <div class="radio-btn btn-alert"><input type="radio" id="b7" name="bristol"><label for="b7">T7</label></div>
+        </div>
+        <div class="bristol-legend">
+            <div><strong>T1:</strong> Palline dure e separate</div>
+            <div><strong>T2:</strong> A forma di salsiccia ma con grumi</div>
+            <div><strong>T3:</strong> Come una salsiccia con crepe in superficie</div>
+            <div><strong>T4:</strong> Salsiccia liscia e morbida</div>
+            <div><strong>T5:</strong> Pezzi morbidi con bordi ben definiti</div>
+            <div><strong>T6:</strong> Pezzi sfilacciati, consistenza poltacea</div>
+            <div><strong>T7:</strong> Acquosa, nessun pezzo solido</div>
+        </div>
+
+        <div class="section-subtitle">Gonfiore Addominale</div>
+        <div class="radio-grid" style="grid-template-columns: repeat(5, 1fr);">
+            <div class="radio-btn btn-good"><input type="radio" id="g1" name="gonfiore"><label for="g1">0–1</label></div>
+            <div class="radio-btn btn-good"><input type="radio" id="g2" name="gonfiore"><label for="g2">2–3</label></div>
+            <div class="radio-btn btn-warn"><input type="radio" id="g3" name="gonfiore"><label for="g3">4–5</label></div>
+            <div class="radio-btn btn-warn"><input type="radio" id="g4" name="gonfiore"><label for="g4">6–7</label></div>
+            <div class="radio-btn btn-alert"><input type="radio" id="g5" name="gonfiore"><label for="g5">8–10</label></div>
+        </div>
+
+        <div class="section-subtitle">Acqua Bevuta</div>
+        <div class="radio-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="radio-btn btn-alert"><input type="radio" id="a1" name="acqua"><label for="a1">&lt; 1.8 L</label></div>
+            <div class="radio-btn btn-good"><input type="radio" id="a2" name="acqua"><label for="a2">1.8 L</label></div>
+            <div class="radio-btn btn-good"><input type="radio" id="a3" name="acqua"><label for="a3">≥ 2.0 L</label></div>
+        </div>
+
+        <div class="section-subtitle">Note / Peso del mattino</div>
+        <textarea placeholder="Inserisci note su peso, energia o altri sintomi..."></textarea>
+    </div>
+
+</div>
+
+<div class="action-bar">
+    <button class="btn-pdf" onclick="window.print()">
+        📄 Salva Diario in PDF
+    </button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const totalKcalEl = document.getElementById('total-kcal');
+        const totalProtEl = document.getElementById('total-prot');
+
+        const checkNoci = document.getElementById('check-noci');
+        const checkOlio5 = document.getElementById('check-olio-5');
+        const checkOlio10 = document.getElementById('check-olio-10');
+        const itemOlio5 = document.getElementById('item-olio-5');
+        const itemOlio10 = document.getElementById('item-olio-10');
+
+        function updateTotalsAndRules() {
+            let kcal = 0;
+            let prot = 0;
+
+            // Valuta Proteina Cena
+            const selectedCenaProt = document.querySelector('input[name="cena-prot"]:checked');
+            let fatType = selectedCenaProt ? selectedCenaProt.dataset.fat : null;
+            let hasNoci = checkNoci.checked;
+
+            // Gestione Dinamica Regola Olio Cena
+            if (fatType === 'grassa') {
+                // Mozzarella / Grana -> 0g Olio
+                itemOlio5.classList.add('disabled');
+                itemOlio10.classList.add('disabled');
+                checkOlio5.checked = false;
+                checkOlio10.checked = false;
+            } else if (fatType === 'media' || hasNoci) {
+                // Grassi propri o Noci selezionate -> Max 5g Olio
+                itemOlio10.classList.add('disabled');
+                checkOlio10.checked = false;
+                itemOlio5.classList.remove('disabled');
+            } else {
+                // Magra senza noci -> Disponibile sia 5g che 10g Olio
+                itemOlio5.classList.remove('disabled');
+                itemOlio10.classList.remove('disabled');
+            }
+
+            // Calcolo Totali
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    kcal += parseInt(cb.dataset.kcal || 0);
+                    prot += parseInt(cb.dataset.prot || 0);
+                }
+            });
+
+            totalKcalEl.textContent = kcal;
+            totalProtEl.textContent = prot + ' g';
+        }
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                // Comportamento scelta singola (Radio-like) per gruppi esclusivi
+                if (e.target.name && e.target.checked) {
+                    document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(other => {
+                        if (other !== e.target) other.checked = false;
+                    });
+                }
+                updateTotalsAndRules();
+            });
+        });
+
+        updateTotalsAndRules();
+    });
+</script>
+
+</body>
+</html>
